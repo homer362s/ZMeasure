@@ -60,11 +60,33 @@ void connectToZurich(struct Measurement* measurement)
 		return;
 	} 
 	
+	// Update UI
 	populateTree(measurement, ZNODESP_SETTINGTREE, ZI_LIST_NODES_NONE);
+	SetCtrlAttribute(measurement->panels->znodes, ZNODESP_DISCONNECT, ATTR_DIMMED, 0);
 }
 
-void disconnectFromZurich(struct Measurement* measurement, int index)
+// Returns the zurich data assocated with a given node tree
+struct ZurichData* getZurichDataFromNode(struct Measurement* measurement, struct ZurichNode* node)
 {
+	for(int i = 0;i < measurement->connectionCount;i++) {
+		if (measurement->zurich[i]->tree == node)
+			return measurement->zurich[i];
+	}
+	return 0;
+}
+
+int getZurichIndex(struct Measurement* measurement, struct ZurichData* zurich)
+{
+	for(int i = 0;i < measurement->connectionCount;i++) {
+		if (measurement->zurich[i] == zurich)
+			return i;
+	}
+	return -1;
+}
+
+void disconnectFromZurich(struct Measurement* measurement, struct ZurichData* zurich)
+{
+	int index = getZurichIndex(measurement, zurich);
 	deleteZurichConnection(measurement, index);
 	
 	// TODO: add UI updates
@@ -164,7 +186,32 @@ int CVICALLBACK manageConnections_CB (int panel, int control, int event, void *c
 					DisplayPanel(measurement->panels->zconn);
 					break;
 				case ZNODESP_DISCONNECT:
-					printf("not implemented\n");
+					int treeSelectedIndex, treeSelectedRoot;
+					int fakenode;
+					struct ZurichNode* node;
+					struct ZurichData* zurich;
+
+					// Get the selected item index
+					GetActiveTreeItem(panel, ZNODESP_SETTINGTREE, &treeSelectedIndex);
+					
+					// Get the root node for the selected item
+					GetTreeItem (panel, ZNODESP_SETTINGTREE, VAL_ANCESTOR, treeSelectedIndex, VAL_LAST, VAL_NEXT_PLUS_SELF, 0, &treeSelectedRoot);
+					
+					// Get the ZurichNode for the root
+					GetTreeItemAttribute(panel, ZNODESP_SETTINGTREE, treeSelectedRoot, ATTR_CTRL_VAL, &fakenode);
+					node = (struct ZurichNode*) fakenode;
+					zurich = getZurichDataFromNode(measurement, node);
+					
+					// Disconnect from the selected zurich
+					disconnectFromZurich(measurement, zurich);
+					
+					// Remove the root item from the tree. 
+					DeleteListItem(panel, ZNODESP_SETTINGTREE, treeSelectedRoot, 1);
+					
+					// If there are no more nodes then disable the disconnect button
+					if(measurement->connectionCount <= 0) {
+						SetCtrlAttribute(panel, ZNODESP_DISCONNECT, ATTR_DIMMED, 1);
+					}
 					break;
 			}
 			break;

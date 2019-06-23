@@ -21,11 +21,17 @@ void printNodeTree(struct ZurichNode* tree, char* indent)
 }
 
 // Get the entire node tree from the connect zurich device
-void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, char* path, int flags)
+// ZurichData* zurich -> pointer to the zurich data/connection struct
+// ZurichNode* tree -> all the children will be filled in for this node 
+// int flags -> flags passed directly through to ziAPIListNodes
+void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, int flags)
 {
+	// TODO: nodestr should be heap memory rather than stack memory
 	char nodestr[10000];
 	
-	zurich->retVal = ziAPIListNodes(zurich->conn, buildZurichPath(zurich->path, zurich->device, path), nodestr, sizeof(nodestr), flags);
+	getZurichTreePath(tree, zurich->path);
+	zurich->retVal = ziAPIListNodes(zurich->conn, zurich->path, nodestr, sizeof(nodestr), flags);
+	
 	
 	// Count returned nodes
 	int nodeCount = 0;
@@ -92,10 +98,8 @@ void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, c
 	}
 	
 	// Recursively fill in the remaining sub children
-	char combpath[128];
 	for(i = 0;i < tree->nChildren;i++) {
-		sprintf(combpath, "%s/%s", path, tree->children[i]->name);
-		getNodeTreeFromDevice(zurich, tree->children[i], combpath, flags);
+		getNodeTreeFromDevice(zurich, tree->children[i], flags);
 	}
 }
 
@@ -158,7 +162,7 @@ void populateTree(struct Measurement* measurement, int treeControl, int flags)
 	
 	tree->name = zurich->device;
 	tree->parent = 0;		// Tree root doesn't have a parent
-	getNodeTreeFromDevice(zurich, tree, "", flags);
+	getNodeTreeFromDevice(zurich, tree, flags);
 	
 	
 	// Note: CVI trees can be sorted with SortTreeItems().
@@ -196,3 +200,15 @@ void getZurichTreePath(struct ZurichNode* leaf, char* fullPath)
 	// Add the root node to finish the path
 	sprintf(fullPath, "/%s/%s", node->name, partialPath);
 }
+
+
+
+void addZurichNode(struct ZurichNode* rootNode, struct ZurichNode* parent)
+{
+}
+
+
+void removeZurichNode(struct ZurichNode* targetNode)
+{
+}
+

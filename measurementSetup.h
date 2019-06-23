@@ -30,7 +30,7 @@ struct Measurement {
 };
 
 void connectToZurich(struct Measurement* measurement);
-void disconnectFromZurich(struct Measurement* measurement, int index);
+void disconnectFromZurich(struct Measurement* measurement, struct ZurichData* zurich);
 
 struct ZurichData* newZurichConnection(struct Measurement* measurement);
 void deleteZurichConnection(struct Measurement* measurement, int index);
