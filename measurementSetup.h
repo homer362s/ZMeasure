@@ -20,7 +20,7 @@ struct ZurichData {
 	char device[MAX_DEVICE_LENGTH];		// Device name
 	char* errBuffer;					// Holds the last error from the device
 	char* path;							// Temporary variable to hold the last path built
-	struct ZurichNode* tree;							// Node tree for all nodes on the device
+	struct ZurichNode* tree;			// Node tree for all nodes on the device
 };
 
 struct Measurement {

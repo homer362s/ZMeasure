@@ -54,7 +54,7 @@ Window Top = 152
 Window Left = 74
 Window Height = 349
 Window Width = 747
-Window Z-Order = 3
+Window Z-Order = 5
 
 [File 0002]
 Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.c"
@@ -63,7 +63,7 @@ Disk Date = 3644154985
 In Projects = "1,"
 Window Top = 32
 Window Left = 10
-Window Z-Order = 4
+Window Z-Order = 6
 Source Window State = "1,91,91,91,16,26,26,0,0,88,0,15,0,0,0,25,79,0,100,31,349,747,1,0,"
 
 [File 0003]
@@ -90,12 +90,12 @@ In Projects = "1,"
 [File 0006]
 Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.c"
 File Type = "CSource"
-Disk Date = 3644157014
+Disk Date = 3644178594
 In Projects = "1,"
 Window Top = 182
 Window Left = 90
-Window Z-Order = 5
-Source Window State = "1,64,64,64,21,26,26,0,0,88,0,143,0,1,0,25,24,0,64,48,349,747,1,16,"
+Window Z-Order = 1
+Source Window State = "1,201,201,201,69,85,85,0,0,208,0,143,0,1,0,47,177,0,202,61,349,747,1,16,"
 
 [File 0007]
 Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
@@ -109,12 +109,12 @@ Source Window State = "1,324,324,324,23,30,30,0,0,88,0,0,0,0,0,25,0,0,78,0,349,7
 [File 0008]
 Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
 File Type = "Include"
-Disk Date = 3644155203
+Disk Date = 3644176471
 In Projects = "1,"
 Window Top = 242
 Window Left = 122
-Window Z-Order = 6
-Source Window State = "1,32,32,32,72,76,72,0,0,88,0,0,0,0,0,25,15,0,33,74,349,747,1,16,"
+Window Z-Order = 4
+Source Window State = "1,22,22,22,40,56,56,0,0,88,0,0,0,0,0,25,3,0,22,40,349,747,1,16,"
 
 [File 0009]
 Path = "/c/Users/user/Desktop/ZMeasure/ziUtility.h"
@@ -137,22 +137,22 @@ Source Window State = "1,9,37,37,0,3,3,0,0,88,0,130,0,5,0,25,0,0,9,0,349,747,1,1
 [File 0011]
 Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
 File Type = "CSource"
-Disk Date = 3644176357
+Disk Date = 3644178508
 In Projects = "1,"
 Window Top = 92
 Window Left = 42
-Window Z-Order = 1
-Source Window State = "1,24,24,24,23,44,44,0,0,208,0,171,0,0,0,47,9,0,24,33,349,747,1,16,"
+Window Z-Order = 2
+Source Window State = "1,143,143,143,0,33,33,0,0,88,0,171,0,0,0,25,122,0,142,4,349,747,1,16,"
 
 [File 0012]
 Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
 File Type = "Include"
-Disk Date = 3644176242
+Disk Date = 3644178482
 In Projects = "1,"
 Window Top = 122
 Window Left = 58
-Window Z-Order = 2
-Source Window State = "1,25,25,25,78,89,89,0,0,88,0,0,0,0,0,25,10,0,25,77,349,747,1,0,"
+Window Z-Order = 3
+Source Window State = "1,21,21,21,0,55,55,0,0,88,0,0,0,0,0,25,0,0,6,27,349,747,1,0,"
 
 [Tab Order]
 Tab 0001 = "/c/Users/user/Desktop/ZMeasure/ZMeasure.uir"

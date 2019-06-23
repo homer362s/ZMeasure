@@ -3,13 +3,14 @@
 
 #include "measurementSetup.h"
 
+#define ZURICH_NODESTR_MAXLEN 5000
+#define ZURICH_DEV_MAXLEN 8
+
 struct ZurichNode {
 	struct ZurichNode* parent;  
 	char* name;
 	int nChildren;
 	struct ZurichNode** children;
-	char* nameptr;						// Pointer to memory allocated for children names
-	struct ZurichNode* nodeptr;			// Pointer to memory allocated for children ZurichNodes
 };
 
 
@@ -18,8 +19,7 @@ void getZurichTreePath(struct ZurichNode* tree, char* path);
 void populateTree(struct Measurement* measurement, int treeControl, int flags);
 void populateTreeNode(int panel, int treeControl, struct ZurichNode* tree, int parentIndex);
 
-void freeZurichNodeTree(struct ZurichNode* tree);
-void freeZurichNodeChildren(struct ZurichNode* tree);
+void freeZurichNode(struct ZurichNode* tree);
 
 void sortNodeTree(struct ZurichNode* tree);
 

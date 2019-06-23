@@ -123,6 +123,7 @@ void deleteZurichConnection(struct Measurement* measurement, int index)
 	struct ZurichData* zurich = measurement->zurich[index];
 	
 	// Delete specified connection
+	freeZurichNode(zurich->tree);
 	ziAPIUnSubscribe(zurich->conn, "*"); 
 	ziAPIDeallocateEventEx(zurich->event);
 	ziAPIDisconnect(zurich->conn);
@@ -196,6 +197,11 @@ int CVICALLBACK manageConnections_CB (int panel, int control, int event, void *c
 					
 					// Get the root node for the selected item
 					GetTreeItem (panel, ZNODESP_SETTINGTREE, VAL_ANCESTOR, treeSelectedIndex, VAL_LAST, VAL_NEXT_PLUS_SELF, 0, &treeSelectedRoot);
+					
+					// Value will be -1 if the node is the root
+					if(treeSelectedRoot == -1) {
+						treeSelectedRoot = treeSelectedIndex;
+					}
 					
 					// Get the ZurichNode for the root
 					GetTreeItemAttribute(panel, ZNODESP_SETTINGTREE, treeSelectedRoot, ATTR_CTRL_VAL, &fakenode);

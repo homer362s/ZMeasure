@@ -26,18 +26,17 @@ void printNodeTree(struct ZurichNode* tree, char* indent)
 // int flags -> flags passed directly through to ziAPIListNodes
 void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, int flags)
 {
-	// TODO: nodestr should be heap memory rather than stack memory
-	char nodestr[10000];
+	char* nodestr = malloc(ZURICH_NODESTR_MAXLEN * sizeof(char));
 	
 	getZurichTreePath(tree, zurich->path);
-	zurich->retVal = ziAPIListNodes(zurich->conn, zurich->path, nodestr, sizeof(nodestr), flags);
+	zurich->retVal = ziAPIListNodes(zurich->conn, zurich->path, nodestr, ZURICH_NODESTR_MAXLEN, flags);
 	
 	
-	// Count returned nodes
+	// Count returned nodes and break into substrings
 	int nodeCount = 0;
 	char c;
 	int charCount;
-	for(charCount = 0;charCount < 10000;charCount++) {
+	for(charCount = 0;charCount < ZURICH_NODESTR_MAXLEN;charCount++) {
 		c = nodestr[charCount];
 		
 		if(!c) {
@@ -48,59 +47,46 @@ void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, i
 		
 		if(c == '\n') {
 			nodeCount = nodeCount + 1;
+			nodestr[charCount] = 0;
 		}
 	}
 	
 	// Copy names into tree
 	if(nodeCount) {
-		tree->nChildren = nodeCount; 
-		tree->nameptr = malloc(nodeCount + charCount * sizeof(char));
-		tree->children = malloc(nodeCount * sizeof(struct ZurichNode*));
-		tree->nodeptr = malloc(nodeCount * sizeof(struct ZurichNode));
-		// Map children node pointers in the array
-		for(int i = 0;i < nodeCount;i++) {
-			tree->children[i] = tree->nodeptr + i;
-		}
-		strcpy(tree->nameptr, nodestr);
+		tree->nChildren = nodeCount;
 		
-		// Set children's parent
-		for(int i = 0;i < tree->nChildren;i++) {
+		// Allocate children array, individual children, and initialize
+		tree->children = malloc(nodeCount * sizeof(struct ZurichNode*));
+		for(int i = 0;i < nodeCount;i++) {
+			tree->children[i] = malloc(sizeof(struct ZurichNode));
 			tree->children[i]->parent = tree;
+			tree->children[i]->nChildren = -1;
+		}		
+		
+		// Set names for each child
+		int namelen;
+		int strStart = 0;
+		for(int i = 0;i < nodeCount;i++) {
+			// Copy the name into a new string
+			namelen = strlen(nodestr + strStart);
+			tree->children[i]->name = malloc((namelen + 1) * sizeof(char));
+			strcpy(tree->children[i]->name, nodestr + strStart);
+			
+			
+			// Find the start of the next string
+			strStart = strStart + namelen + 1;
+		}
+	
+		// Recursively fill in the remaining sub children
+		for(int i = 0;i < tree->nChildren;i++) {
+			getNodeTreeFromDevice(zurich, tree->children[i], flags);
 		}
 	} else {
 		tree->nChildren = 0;
-		tree->nameptr = 0;
 		tree->children = 0;
-		return;
 	}
 	
-	// Set names for each child by pointing to the start of the substring in .ptr
-	int childIndex = 0;
-	tree->children[childIndex]->name = tree->nameptr;
-	tree->children[childIndex]->nChildren = -1;
-	childIndex = 1;
-	int i = 0;
-	while(childIndex < nodeCount) {
-		c = tree->nameptr[i];
-		
-		if(c == 0) {
-			break;
-		}
-		
-		if(c == '\n') {
-			tree->nameptr[i] = 0;
-			tree->children[childIndex]->name = tree->nameptr + i + 1;
-			tree->children[childIndex]->nChildren = -1;
-			childIndex = childIndex + 1;
-		}
-		
-		i = i + 1;
-	}
-	
-	// Recursively fill in the remaining sub children
-	for(i = 0;i < tree->nChildren;i++) {
-		getNodeTreeFromDevice(zurich, tree->children[i], flags);
-	}
+	free(nodestr);
 }
 
 void sortNodeTree(struct ZurichNode* tree)
@@ -124,22 +110,17 @@ void sortNodeTree(struct ZurichNode* tree)
 	}
 }
 
-// Free all the children of a ZurichNode tree and all children
-void freeZurichNodeChildren(struct ZurichNode* tree)
+// Free all the children of a ZurichNode tree
+void freeZurichNode(struct ZurichNode* tree)
 {
 	for(int i = 0;i < tree->nChildren;i++) {
-		freeZurichNodeChildren(tree->children[i]);
+		freeZurichNode(tree->children[i]);
 	}
-	free(tree->nameptr);
 	free(tree->children);
-}
-																																		 
-// Free an entire ZurichNode tree. Must be called on the root of a tree
-void freeZurichNodeTree(struct ZurichNode* tree)
-{
-	freeZurichNodeChildren(tree);
+	free(tree->name);
 	free(tree);
 }
+
 
 void populateTreeNode(int panel, int treeControl, struct ZurichNode* tree, int parentIndex)
 {
@@ -160,7 +141,8 @@ void populateTree(struct Measurement* measurement, int treeControl, int flags)
 	struct ZurichNode* tree = malloc(sizeof(struct ZurichNode));
 	zurich->tree = tree;
 	
-	tree->name = zurich->device;
+	tree->name = malloc(ZURICH_DEV_MAXLEN * sizeof(char));
+	strcpy(tree->name, zurich->device);
 	tree->parent = 0;		// Tree root doesn't have a parent
 	getNodeTreeFromDevice(zurich, tree, flags);
 	
@@ -175,9 +157,6 @@ void populateTree(struct Measurement* measurement, int treeControl, int flags)
 	for(int i = 0;i < tree->nChildren;i++) {
 		populateTreeNode(measurement->panels->znodes, treeControl, tree->children[i], rootIndex);
 	}
-	
-	
-	freeZurichNodeTree(tree);
 }
 	   
 
