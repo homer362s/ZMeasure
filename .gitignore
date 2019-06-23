@@ -1,0 +1,5 @@
+# Labwindows build directories
+cvibuild.ZMeasure/*
+
+# Executables
+*.exe

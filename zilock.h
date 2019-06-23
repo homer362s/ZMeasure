@@ -1,0 +1,3 @@
+
+int testZISetParam();
+int testZIStream();

@@ -1,0 +1,258 @@
+[Workspace Header]
+Version = 1700
+Pathname = "/c/Users/user/Desktop/ZMeasure/ZMeasure.cws"
+CVI Dir = "/c/program files (x86)/national instruments/cvi2017"
+CVI Shared Dir = "/C/Program Files (x86)/National Instruments/Shared/CVI"
+CVI Pub Local Dir = "/C/ProgramData/National Instruments/CVI2017"
+CVI Pub Global Dir = "/C/ProgramData/National Instruments/CVI"
+IVI Standard Root Dir = "/C/Program Files (x86)/IVI Foundation/IVI"
+IVI Standard Root 64-bit Dir = "/C/Program Files/IVI Foundation/IVI"
+VXIplug&play Framework Dir = "/C/Program Files (x86)/IVI Foundation/VISA/winnt"
+VXIplug&play Framework 64-bit Dir = "/C/Program Files/IVI Foundation/VISA/win64"
+Number of Projects = 1
+Active Project = 1
+Project 0001 = "ZMeasure.prj"
+Drag Bar Left = 217
+Window Top = 90
+Window Left = 471
+Window Bottom = 817
+Window Right = 1405
+Maximized = True
+Maximized Children = True
+Max32 Number Of Errors = 20
+Track Include File Dependencies = True
+Prompt For Missing Includes = True
+Stop On First Error File = False
+Bring Up Err Win At Start = True
+Bring Up Err Win For Errors = False
+Save Changes Before Running = "Always"
+Save Changes Before Compiling = "Always"
+Hide Windows = False
+Break At First Statement = False
+Sort Type = "File Name"
+Number of Opened Files = 9
+Window Confinement Region Enabled = True
+MainColumnWidth = 200
+FileDateColumnWidth = 70
+FileSizeColumnWidth = 70
+
+[Project Header 0001]
+Version = 1700
+Don't Update DistKit = False
+Platform Code = 4
+Build Configuration = "Debug"
+Warn User If Debugging Release = 1
+Batch Build Release = False
+Batch Build Debug = False
+
+[File 0001]
+Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.uir"
+File Type = "User Interface Resource"
+Disk Date = 3644148196
+In Projects = "1,"
+Window Top = 152
+Window Left = 74
+Window Height = 349
+Window Width = 747
+Window Z-Order = 8
+
+[File 0002]
+Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.c"
+File Type = "CSource"
+Disk Date = 3644146594
+In Projects = "1,"
+Window Top = 32
+Window Left = 10
+Window Z-Order = 5
+Source Window State = "1,91,91,91,16,26,26,0,0,88,0,15,0,0,0,25,79,0,101,37,349,747,1,0,"
+
+[File 0003]
+Path = "/c/Users/user/Desktop/ZMeasure/zilock.c"
+File Type = "CSource"
+Disk Date = 3643808050
+In Projects = "1,"
+Window Top = 62
+Window Left = 26
+Source Window State = "1,2,2,2,0,19,19,0,0,88,0,154,0,154,0,25,57,0,2,22,349,747,1,0,"
+
+[File 0004]
+Path = "/c/Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.lib"
+File Type = "Library"
+Disk Date = 3633650144
+In Projects = "1,"
+
+[File 0005]
+Path = "/c/Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.dll"
+File Type = "DLL"
+Disk Date = 3633650144
+In Projects = "1,"
+
+[File 0006]
+Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.c"
+File Type = "CSource"
+Disk Date = 3644149680
+In Projects = "1,"
+Window Top = 182
+Window Left = 90
+Window Z-Order = 3
+Source Window State = "1,133,133,133,4,21,21,0,0,88,0,143,0,1,0,25,2,0,14,38,349,747,1,16,"
+
+[File 0007]
+Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
+File Type = "Include"
+Disk Date = 3644086097
+In Projects = "1,"
+Window Top = 212
+Window Left = 106
+Window Z-Order = 9
+Source Window State = "1,324,324,324,23,30,30,0,0,88,0,0,0,0,0,25,0,0,78,0,349,747,1,0,"
+
+[File 0008]
+Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
+File Type = "Include"
+Disk Date = 3644146920
+In Projects = "1,"
+Window Top = 242
+Window Left = 122
+Window Z-Order = 4
+Source Window State = "1,22,22,22,4,8,8,0,0,88,0,0,0,0,0,25,0,0,22,11,349,747,1,16,"
+
+[File 0009]
+Path = "/c/Users/user/Desktop/ZMeasure/ziUtility.h"
+File Type = "Include"
+Disk Date = 3644145833
+In Projects = "1,"
+Window Top = 152
+Window Left = 74
+Window Z-Order = 7
+Source Window State = "1,4,4,4,0,2,2,0,0,88,0,0,0,0,0,25,0,0,3,0,349,747,1,0,"
+
+[File 0010]
+Path = "/c/Users/user/Desktop/ZMeasure/ziUtility.c"
+File Type = "CSource"
+Disk Date = 3644142434
+In Projects = "1,"
+Window Top = 182
+Window Left = 90
+Window Z-Order = 6
+Source Window State = "1,40,175,40,0,32,0,0,0,88,0,130,0,5,0,25,0,0,18,15,349,747,1,16,"
+
+[File 0011]
+Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
+File Type = "CSource"
+Disk Date = 3644152119
+In Projects = "1,"
+Window Top = 92
+Window Left = 42
+Window Z-Order = 1
+Source Window State = "1,109,109,109,12,15,15,0,0,208,0,27,0,0,0,47,105,0,138,40,349,747,1,11,"
+
+[File 0012]
+Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
+File Type = "Include"
+Disk Date = 3644151712
+In Projects = "1,"
+Window Top = 122
+Window Left = 58
+Window Z-Order = 2
+Source Window State = "1,9,10,10,94,86,86,0,0,88,0,0,0,0,0,25,0,0,8,34,349,747,1,0,"
+
+[Tab Order]
+Tab 0001 = "/c/Users/user/Desktop/ZMeasure/ZMeasure.uir"
+Tab 0002 = "/c/Users/user/Desktop/ZMeasure/ZMeasure.c"
+Tab 0003 = "/c/Users/user/Desktop/ZMeasure/measurementSetup.c"
+Tab 0004 = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
+Tab 0005 = "/c/Users/user/Desktop/ZMeasure/ziUtility.c"
+Tab 0006 = "/c/Users/user/Desktop/ZMeasure/ziUtility.h"
+Tab 0007 = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
+Tab 0008 = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
+Tab 0009 = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
+
+[Default Build Config 0001 Debug]
+Generate Browse Info = True
+Enable Uninitialized Locals Runtime Warning = True
+Batch Build = False
+Profile = "Disabled"
+Debugging Level = "Standard"
+Execution Trace = "Disabled"
+Command Line Args = ""
+Working Directory = ""
+Environment Options = ""
+External Process Path = ""
+
+[Default Build Config 0001 Release]
+Generate Browse Info = True
+Enable Uninitialized Locals Runtime Warning = True
+Batch Build = False
+Profile = "Disabled"
+Debugging Level = "Standard"
+Execution Trace = "Disabled"
+Command Line Args = ""
+Working Directory = ""
+Environment Options = ""
+External Process Path = ""
+
+[Default Build Config 0001 Debug64]
+Generate Browse Info = True
+Enable Uninitialized Locals Runtime Warning = True
+Batch Build = False
+Profile = "Disabled"
+Debugging Level = "Standard"
+Execution Trace = "Disabled"
+Command Line Args = ""
+Working Directory = ""
+Environment Options = ""
+External Process Path = ""
+
+[Default Build Config 0001 Release64]
+Generate Browse Info = True
+Enable Uninitialized Locals Runtime Warning = True
+Batch Build = False
+Profile = "Disabled"
+Debugging Level = "Standard"
+Execution Trace = "Disabled"
+Command Line Args = ""
+Working Directory = ""
+Environment Options = ""
+External Process Path = ""
+
+[Build Dependencies 0001]
+Number of Dependencies = 0
+
+[Build Options 0001]
+Generate Browse Info = True
+Enable Uninitialized Locals Runtime Warning = True
+Execution Trace = "Disabled"
+Profile = "Disabled"
+Debugging Level = "Standard"
+Break On Library Errors = True
+Break On First Chance Exceptions = False
+
+[Execution Target 0001]
+Execution Target Address = "Local desktop computer"
+Execution Target Port = 0
+Execution Target Type = 0
+
+[SCC Options 0001]
+Use global settings = True
+SCC Provider = ""
+SCC Project = ""
+Local Path = ""
+Auxiliary Path = ""
+Perform Same Action For .h File As For .uir File = "Ask"
+Perform Same Action For .cds File As For .prj File = "Ask"
+Username = ""
+Comment = ""
+Use Default Username = False
+Use Default Comment = False
+Suppress CVI Error Messages = False
+Always show confirmation dialog = True
+
+[DLL Debugging Support 0001]
+External Process Path = ""
+
+[Command Line Args 0001]
+Command Line Args = ""
+Working Directory = ""
+Environment Options = ""
+
