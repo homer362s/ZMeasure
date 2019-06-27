@@ -1,12 +1,9 @@
-
 #include <ansi_c.h>
-#include <cvirte.h>		
-#include <userint.h>
-#include "ZMeasure.h"
-
-#include "toolbox.h"
 
 #include "fixedziAPI.h"
+#include "meastypes.h"
+
+#include "ZMeasure.h"
 #include "measurementSetup.h"
 
 
@@ -47,6 +44,9 @@ void initializePanels(struct Measurement* measurement)
 	
 	measurement->panels->znodes = LoadPanel(measurement->panels->main, "ZMeasure.uir", ZNODESP);
 	SetPanelAttribute(measurement->panels->znodes, ATTR_CALLBACK_DATA, measurement);
+	
+	measurement->panels->measvars = LoadPanel(measurement->panels->main, "ZMeasure.uir", MEASVARSP);
+	SetPanelAttribute(measurement->panels->measvars, ATTR_CALLBACK_DATA, measurement);
 	
 	
 	DisplayPanel(measurement->panels->main);
@@ -130,6 +130,9 @@ void CVICALLBACK openPanel_CB (int menuBar, int menuItem, void *callbackData, in
 			break;
 		case MENUBAR_SETUP_ZURICH:
 			DisplayPanel(measurement->panels->znodes);
+			break;
+		case MENUBAR_SETUP_MEASUREMENT:
+			DisplayPanel(measurement->panels->measvars);
 			break;
 			
 	}

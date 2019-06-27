@@ -21,15 +21,28 @@
 #define  ABOUTP_TEXTMSG_2                 6       /* control type: textMsg, callback function: (none) */
 
 #define  MAINP                            2       /* callback function: mainPanel_CB */
+#define  MAINP_SPLITTER                   2       /* control type: splitter, callback function: (none) */
+#define  MAINP_DISCONNECT                 3       /* control type: command, callback function: (none) */
+#define  MAINP_CONNECT                    4       /* control type: command, callback function: (none) */
+#define  MAINP_CONNECTIONS                5       /* control type: listBox, callback function: (none) */
 
-#define  ZCONNP                           3       /* callback function: subpanel_CB */
+#define  MEASVARSP                        3       /* callback function: subpanel_CB */
+#define  MEASVARSP_OUTVARTREE             2       /* control type: tree, callback function: (none) */
+#define  MEASVARSP_INVARTREE              3       /* control type: tree, callback function: (none) */
+#define  MEASVARSP_REMOVE                 4       /* control type: command, callback function: (none) */
+#define  MEASVARSP_START                  5       /* control type: command, callback function: startstop_CB */
+#define  MEASVARSP_FILEPREFIX             6       /* control type: string, callback function: (none) */
+#define  MEASVARSP_STOP                   7       /* control type: command, callback function: startstop_CB */
+#define  MEASVARSP_PAUSE                  8       /* control type: command, callback function: startstop_CB */
+
+#define  ZCONNP                           4       /* callback function: subpanel_CB */
 #define  ZCONNP_DEVICE                    2       /* control type: string, callback function: (none) */
 #define  ZCONNP_SERVER                    3       /* control type: string, callback function: (none) */
 #define  ZCONNP_PORT                      4       /* control type: numeric, callback function: (none) */
 #define  ZCONNP_CANCEL                    5       /* control type: command, callback function: closePanel_CB */
 #define  ZCONNP_CONNECT                   6       /* control type: command, callback function: connect_CB */
 
-#define  ZNODESP                          4       /* callback function: subpanel_CB */
+#define  ZNODESP                          5       /* callback function: subpanel_CB */
 #define  ZNODESP_SETTINGTREE              2       /* control type: tree, callback function: nodeTree_CB */
 #define  ZNODESP_NEWCONNECTION            3       /* control type: command, callback function: manageConnections_CB */
 #define  ZNODESP_DISCONNECT               4       /* control type: command, callback function: manageConnections_CB */
@@ -48,11 +61,9 @@
 #define  MENUBAR_FILE_EXIT                4       /* callback function: exit_CB */
 #define  MENUBAR_SETUP                    5
 #define  MENUBAR_SETUP_ZURICH             6       /* callback function: openPanel_CB */
-#define  MENUBAR_SETUP_SWEEP              7       /* callback function: openPanel_CB */
-#define  MENUBAR_SETUP_OUTPUT             8       /* callback function: openPanel_CB */
-#define  MENUBAR_START                    9
-#define  MENUBAR_HELP                     10
-#define  MENUBAR_HELP_ABOUT               11      /* callback function: openPanel_CB */
+#define  MENUBAR_SETUP_MEASUREMENT        7       /* callback function: openPanel_CB */
+#define  MENUBAR_HELP                     8
+#define  MENUBAR_HELP_ABOUT               9       /* callback function: openPanel_CB */
 
 
      /* Callback Prototypes: */
@@ -64,6 +75,7 @@ int  CVICALLBACK mainPanel_CB(int panel, int event, void *callbackData, int even
 int  CVICALLBACK manageConnections_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK nodeTree_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 void CVICALLBACK openPanel_CB(int menubar, int menuItem, void *callbackData, int panel);
+int  CVICALLBACK startstop_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK subpanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 
 

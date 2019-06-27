@@ -1,12 +1,11 @@
 #include <ansi_c.h>
-#include <userint.h>
 
 #include "fixedziAPI.h"
+#include "meastypes.h"
 
 #include "ZMeasure.h"
 #include "zurichNodeTree.h"
 #include "measurementSetup.h"
-#include "ziUtility.h"
 
 
 // Create main measurement struct
@@ -224,3 +223,4 @@ int CVICALLBACK manageConnections_CB (int panel, int control, int event, void *c
 	}
 	return 0;
 }
+

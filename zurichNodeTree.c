@@ -1,13 +1,13 @@
+// Handles storing a zurich device's node tree
 
-
-#include <ansi_c.h>
-#include <userint.h>
+#include <ansi_c.h>  
+#include <userint.h> 
 
 #include "fixedziAPI.h"
+#include "meastypes.h"
 
 #include "measurementSetup.h"
 #include "zurichNodeTree.h"
-#include "ziUtility.h"
 
 // Print the node tree to stdout
 void printNodeTree(struct ZurichNode* tree, char* indent)
