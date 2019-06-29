@@ -165,8 +165,15 @@ void setZIValue(ZurichConn* zurich, int panel, int control)
 		double value;
 		sprintf(path, "/%s/oscs/%d/freq", zurich->connDef->device, index);
 		GetCtrlVal(panel, control, strvalue);
-		value = atof(strvalue);
-		ziAPISetValueD(zurich->conn, path, value);
+		int retval = readNumberScientific(strvalue, &value);
+		if (retval == 0) {
+			ziAPISetValueD(zurich->conn, path, value);
+			
+			// Change active item
+			int nextArrayHandle = GetCtrlArrayFromResourceID(panel, OSCS);
+			int nextControl = GetCtrlArrayItem(nextArrayHandle, index);
+			SetActiveCtrl(panel, nextControl);
+		}
 		return;
 	}
 	

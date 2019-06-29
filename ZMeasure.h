@@ -114,10 +114,18 @@
 #define  MAINP_ROWLABEL2_8                92      /* control type: textMsg, callback function: (none) */
 #define  MAINP_TEXTMSG_2                  93      /* control type: textMsg, callback function: (none) */
 #define  MAINP_TEXTMSG                    94      /* control type: textMsg, callback function: (none) */
-#define  MAINP_STOPUPDATES                95      /* control type: command, callback function: stopUpdates_CB */
-#define  MAINP_DECORATION_3               96      /* control type: deco, callback function: (none) */
-#define  MAINP_DECORATION_2               97      /* control type: deco, callback function: (none) */
-#define  MAINP_OSCLABEL                   98      /* control type: textMsg, callback function: (none) */
+#define  MAINP_ENABLE_8                   95      /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_7                   96      /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_6                   97      /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_5                   98      /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_4                   99      /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_3                   100     /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_2                   101     /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_ENABLE_1                   102     /* control type: LED, callback function: setZIValue_CB */
+#define  MAINP_DECORATION_3               103     /* control type: deco, callback function: (none) */
+#define  MAINP_DECORATION_2               104     /* control type: deco, callback function: (none) */
+#define  MAINP_OSCLABEL                   105     /* control type: textMsg, callback function: (none) */
+#define  MAINP_ENABLELABEL                106     /* control type: textMsg, callback function: (none) */
 
 #define  MEASVARSP                        3       /* callback function: subpanel_CB */
 #define  MEASVARSP_OUTVARTREE             2       /* control type: tree, callback function: (none) */
@@ -144,13 +152,14 @@
      /* Control Arrays: */
 
 #define  AUTOPHASE                        1
-#define  FREQ                             2
-#define  FREQLOCK                         3
-#define  HARM                             4
-#define  ORDER                            5
-#define  OSCS                             6
-#define  PHASE                            7
-#define  SIG                              8
+#define  ENABLE                           2
+#define  FREQ                             3
+#define  FREQLOCK                         4
+#define  HARM                             5
+#define  ORDER                            6
+#define  OSCS                             7
+#define  PHASE                            8
+#define  SIG                              9
 
      /* Menu Bars, Menus, and Menu Items: */
 
@@ -161,8 +170,12 @@
 #define  MENUBAR_SETUP                    5
 #define  MENUBAR_SETUP_ZURICH             6       /* callback function: openPanel_CB */
 #define  MENUBAR_SETUP_MEASUREMENT        7       /* callback function: openPanel_CB */
-#define  MENUBAR_HELP                     8
-#define  MENUBAR_HELP_ABOUT               9       /* callback function: openPanel_CB */
+#define  MENUBAR_SETUP_REFRESH            8
+#define  MENUBAR_SETUP_REFRESH_SUBMENU    9
+#define  MENUBAR_SETUP_REFRESH_AUTOREFRESH 10
+#define  MENUBAR_SETUP_REFRESH_MANUALREFRESH 11
+#define  MENUBAR_HELP                     12
+#define  MENUBAR_HELP_ABOUT               13      /* callback function: openPanel_CB */
 
 
      /* Callback Prototypes: */
@@ -177,7 +190,6 @@ int  CVICALLBACK nodeTree_CB(int panel, int control, int event, void *callbackDa
 void CVICALLBACK openPanel_CB(int menubar, int menuItem, void *callbackData, int panel);
 int  CVICALLBACK setZIValue_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK startstop_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
-int  CVICALLBACK stopUpdates_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK subpanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 
 

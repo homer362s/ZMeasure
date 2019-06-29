@@ -22,6 +22,7 @@ void deleteActiveConn(ZurichConn* zurich);
 ZurichConnDef* copyZurichConnDef(ZurichConnDef* connDefOri);
 
 void autophase(int panel, int control);
+int readNumberScientific(char* instr, double* value);
 
 
 void deleteUITimerThread(ZMeasure* zmeasure);
