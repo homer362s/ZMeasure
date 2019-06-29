@@ -1,6 +1,6 @@
-#ifndef __MEASUREMENT_H__
-#define __MEASUREMENT_H__
+#ifndef __MeasurementLegacy_H__
+#define __MeasurementLegacy_H__
 
 
 
-#endif  /* ndef __measurement_H__ */
+#endif  /* ndef __MeasurementLegacy_H__ */

@@ -1,10 +1,10 @@
-// A data structure to hold the specified measurement nodes
+// A data structure to hold the specified MeasurementLegacy nodes
 
 #include <ansi_c.h>
 
 #include "measurementNodes.h"
 
-void addMeasurementNode(struct MeasurementNodes* nodes, char* path)
+void addMeasurementLegacyNode(struct MeasurementLegacyNodes* nodes, char* path)
 {
 	int len = strlen(path);
 	nodes->count = nodes->count + 1;
@@ -15,7 +15,7 @@ void addMeasurementNode(struct MeasurementNodes* nodes, char* path)
 	strcpy(nodes->paths[nodes->count-1], path);
 }
 
-void removeMeasurementNode(struct MeasurementNodes* nodes, int index)
+void removeMeasurementLegacyNode(struct MeasurementLegacyNodes* nodes, int index)
 {
 	// Free the specified path
 	free(nodes->paths[index]);
@@ -30,8 +30,8 @@ void removeMeasurementNode(struct MeasurementNodes* nodes, int index)
 	nodes->paths = realloc(nodes->paths, nodes->count * sizeof(char*));
 }
 
-// Get the measurement node index for the specified path. Returns -1 if not found
-int getMeasurementNodeIndex(struct MeasurementNodes* nodes, char* path)
+// Get the MeasurementLegacy node index for the specified path. Returns -1 if not found
+int getMeasurementLegacyNodeIndex(struct MeasurementLegacyNodes* nodes, char* path)
 {
 	for(int i = 0;i < nodes->count;i++) {
 		if(strcmp(nodes->paths[i], path) == 0) {
@@ -41,8 +41,8 @@ int getMeasurementNodeIndex(struct MeasurementNodes* nodes, char* path)
 	return -1;
 }
 
-// Free the entire MeasurementNode struct and all contained memory
-void freeMeasurementNodes(struct MeasurementNodes* nodes)
+// Free the entire MeasurementLegacyNode struct and all contained memory
+void freeMeasurementLegacyNodes(struct MeasurementLegacyNodes* nodes)
 {
 	for(int i = 0;i < nodes->count;i++) {
 		free(nodes->paths[i]);

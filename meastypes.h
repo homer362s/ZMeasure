@@ -3,7 +3,10 @@
 #ifndef __meastypes_H__
 #define __meastypes_H__
 
-#define MAX_DEVICE_LENGTH 8
+// Required headers for this file
+#include "fixedziAPI.h"
+
+#define MAX_DEV_NAME_LENGTH 8
 #define MAX_DEVICE_CONNECTIONS 16
 #define MAX_NODE_PATH 128
 #define MAX_MEAS_STEPS 10
@@ -15,9 +18,11 @@
 // Typedefs for the following structs
 // If we don't pre-typedef we can't have the circular references we want
 typedef struct ZMeasure ZMeasure;
-typedef struct Measurement2 Measurement2;
+typedef struct ActiveConn ActiveConn;
+typedef struct Measurement Measurement;
 typedef struct PrimaryPanels PrimaryPanels;
 typedef struct ZurichConn ZurichConn;
+typedef struct ZurichConnDef ZurichConnDef;
 typedef struct MeasStep MeasStep; 
 typedef struct MeasVar MeasVar; 
 typedef struct LinearSweep LinearSweep;
@@ -29,16 +34,22 @@ struct ZMeasure {
 	PrimaryPanels* panels;								// Panels for all of the primary functions of the UI
 	ZurichConn* connections[MAX_DEVICE_CONNECTIONS];	// Array of connections to zurich devices
 	uint32_t connCount;									// Number of active connections to zurich devices
+	ActiveConn* activeConn;								// Connection displayed in the main UI window
+};
+
+struct ActiveConn {
+	int timer;					// Async timer reference
+	ZurichConn* conn;			// Zurich connection used in the Async timer thread
 };
 
 
-// A definition of a measurement
-// A measurement is made up of one ore more measurement steps
-// Each step is made up of zero or more measurement variables
-// (zero for repeated measurements for averaging)
-struct Measurement2 {
-	uint32_t nSteps;					// Number of measurement steps
-	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each measurement step	
+// A definition of a MeasurementLegacy
+// A MeasurementLegacy is made up of one ore more MeasurementLegacy steps
+// Each step is made up of zero or more MeasurementLegacy variables
+// (zero for repeated MeasurementLegacys for averaging)
+struct Measurement {
+	uint32_t nSteps;					// Number of MeasurementLegacy steps
+	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each MeasurementLegacy step	
 };
 
 
@@ -50,6 +61,7 @@ struct Measurement2 {
 struct PrimaryPanels {
 	int main;			// Primary program window
 	int about;			// About window
+	int newZConn;		// New connection window
 };
 
 
@@ -59,15 +71,23 @@ struct ZurichConn {
 	ZIResult_enum retVal;				// Return value from most recently called ziAPI function
 	ZIEvent* event;						// ziAPI event buffer for receiving streaming data
 	char* errBuffer;					// Buffer to store the most recent error string
-	char device[MAX_DEVICE_LENGTH];		// Device name
+	ZurichConnDef* connDef;				// Server, port, and device information
 };
 
 
-// Information about a measurement step.
+// All the information necessary to establish a connection to a zurich instruments device
+struct ZurichConnDef {
+	char* address;						// Data server address
+	uint16_t port;						// Data server port
+	char* device;						// Name of zurich device
+};
+
+
+// Information about a MeasurementLegacy step.
 struct MeasStep {
-	uint32_t nPoints;				// Number of points in this measurement step
-	MeasVar* vars[MAX_MEAS_VARS];	// Array of variables to modify at this measurement step
-	float delay;					// Time delay, in seconds,between each measurement at this step
+	uint32_t nPoints;				// Number of points in this MeasurementLegacy step
+	MeasVar* vars[MAX_MEAS_VARS];	// Array of variables to modify at this MeasurementLegacy step
+	float delay;					// Time delay, in seconds,between each MeasurementLegacy at this step
 };
 
 
@@ -83,7 +103,7 @@ struct RelativeSweep {
 	double coeff;		// Multiplicative coefficient. This variable's value is coeff * value of ref
 };
 
-// Information about a measurement variable
+// Information about a MeasurementLegacy variable
 enum SweepType{SWEEP_TYPE_SINGLE, SWEEP_TYPE_DUAL, SWEEP_TYPE_RELATIVE};   
 struct MeasVar {
 	ZurichConn* conn;			// Connection to use for this variable
@@ -116,21 +136,21 @@ struct ZurichData {
 	ZIResult_enum retVal;
 	ZIConnection conn;
 	ZIEvent* event;
-	char device[MAX_DEVICE_LENGTH];		// Device name
+	char device[MAX_DEV_NAME_LENGTH];		// Device name
 	char* errBuffer;					// Holds the last error from the device
 	char* path;							// Temporary variable to hold the last path built
 	struct ZurichNode* tree;			// Node tree for all nodes on the device
 };
 
-struct Measurement {
+struct MeasurementLegacy {
 	struct PanelHandles* panels;
 	int connectionCount;
 	struct ZurichData* zurich[MAX_DEVICE_CONNECTIONS];	// Array of connections to zurich devices
-	struct MeasurementNodes* measNodes;					// Paths to measure
+	struct MeasurementLegacyNodes* measNodes;					// Paths to measure
 };
 
-// Definition of a measurement to make
-// Passed to the measurement thread to initiate a measurement
+// Definition of a MeasurementLegacy to make
+// Passed to the MeasurementLegacy thread to initiate a MeasurementLegacy
 struct MeasDef {
 	char* ziaddr;
 	uint16_t ziport;

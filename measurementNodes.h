@@ -1,15 +1,15 @@
-#ifndef __MEASUREMENTNODES_H__
-#define __MEASUREMENTNODES_H__
+#ifndef __MeasurementLegacyNODES_H__
+#define __MeasurementLegacyNODES_H__
 
-struct MeasurementNodes {
+struct MeasurementLegacyNodes {
 	char** paths;
 	int count;
 };
 
-void addMeasurementNode(struct MeasurementNodes* nodes, char* path);
-void removeMeasurementNode(struct MeasurementNodes* nodes, int index);
-int getMeasurementNodeIndex(struct MeasurementNodes* nodes, char* path);
+void addMeasurementLegacyNode(struct MeasurementLegacyNodes* nodes, char* path);
+void removeMeasurementLegacyNode(struct MeasurementLegacyNodes* nodes, int index);
+int getMeasurementLegacyNodeIndex(struct MeasurementLegacyNodes* nodes, char* path);
 
-void freeMeasurementNodes(struct MeasurementNodes* nodes);
+void freeMeasurementLegacyNodes(struct MeasurementLegacyNodes* nodes);
 
-#endif  /* ndef __measurementNodes_H__ */
+#endif  /* ndef __MeasurementLegacyNodes_H__ */

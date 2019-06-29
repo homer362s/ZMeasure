@@ -16,7 +16,7 @@ struct ZurichNode {
 
 struct ZurichNode* getZurichTreeRoot(struct ZurichNode* tree);
 void getZurichTreePath(struct ZurichNode* tree, char* path);
-void populateTree(struct Measurement* measurement, int treeControl, int flags);
+void populateTree(struct MeasurementLegacy* MeasurementLegacy, int treeControl, int flags);
 void populateTreeNode(int panel, int treeControl, struct ZurichNode* tree, int parentIndex);
 
 void freeZurichNode(struct ZurichNode* tree);

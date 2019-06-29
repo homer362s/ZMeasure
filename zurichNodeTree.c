@@ -132,10 +132,10 @@ void populateTreeNode(int panel, int treeControl, struct ZurichNode* tree, int p
 	}
 }
 
-void populateTree(struct Measurement* measurement, int treeControl, int flags)
+void populateTree(struct MeasurementLegacy* MeasurementLegacy, int treeControl, int flags)
 {
-	int zindex = measurement->connectionCount - 1;
-	struct ZurichData* zurich = measurement->zurich[zindex];
+	int zindex = MeasurementLegacy->connectionCount - 1;
+	struct ZurichData* zurich = MeasurementLegacy->zurich[zindex];
 	
 	
 	struct ZurichNode* tree = malloc(sizeof(struct ZurichNode));
@@ -151,11 +151,11 @@ void populateTree(struct Measurement* measurement, int treeControl, int flags)
 	// But I think I want to have the node tree itself sorted as well
 	sortNodeTree(tree);
 	
-	int rootIndex = InsertTreeItem(measurement->panels->znodes, treeControl, VAL_SIBLING, 0, VAL_LAST, zurich->device, NULL, 0, 0);
+	int rootIndex = InsertTreeItem(MeasurementLegacy->panels->znodes, treeControl, VAL_SIBLING, 0, VAL_LAST, zurich->device, NULL, 0, 0);
 	// Store the tree pointer as an int because void* isn't a valid type for a cvi tree   
-	SetTreeItemAttribute(measurement->panels->znodes, treeControl, rootIndex, ATTR_CTRL_VAL, (int)tree);		
+	SetTreeItemAttribute(MeasurementLegacy->panels->znodes, treeControl, rootIndex, ATTR_CTRL_VAL, (int)tree);		
 	for(int i = 0;i < tree->nChildren;i++) {
-		populateTreeNode(measurement->panels->znodes, treeControl, tree->children[i], rootIndex);
+		populateTreeNode(MeasurementLegacy->panels->znodes, treeControl, tree->children[i], rootIndex);
 	}
 }
 	   

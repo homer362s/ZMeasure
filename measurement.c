@@ -1,4 +1,4 @@
-// Contains functions relating to physically taking a measurement
+// Contains functions relating to physically taking a MeasurementLegacy
 
 #include <ansi_c.h> 
 #include <userint.h>
@@ -52,13 +52,13 @@ static void disconnectFromZurich(struct ZurichData* zurich)
 }
 
 
-// Thread callback to start a new thread to run the measurement
-int CVICALLBACK MeasurementThread(struct MeasDef* measDef)
+// Thread callback to start a new thread to run the MeasurementLegacy
+int CVICALLBACK MeasurementLegacyThread(struct MeasDef* measDef)
 {
 	// We need to establish a new connection to the zurich for this thread
 	struct ZurichData* zurich = connectToZurich(measDef->ziaddr, measDef->ziport, measDef->zidev);
 	
-	// Do some test measurements for now
+	// Do some test MeasurementLegacys for now
 	ZIDemodSample demodSample;
 	for(int i = 0;i < 10;i++) {
 		ziAPIGetDemodSample(zurich->conn, "/dev2086/demods/0/sample", &demodSample);
@@ -77,25 +77,27 @@ int CVICALLBACK MeasurementThread(struct MeasDef* measDef)
 }
 
 
-void startMeasurementThread()
+/*
+void startMeasurementLegacyThread()
 {
-	// Start the measurement thread
+	// Start the MeasurementLegacy thread
 	CmtThreadFunctionID threadID;
 	struct MeasDef* measDef = malloc(sizeof(struct MeasDef));
 	measDef->measnodes = 0;
 	measDef->ziaddr = "newsix.ee.nd.edu";
 	measDef->ziport = 8004;
 	measDef->zidev = "dev2086";
-	CmtScheduleThreadPoolFunction(DEFAULT_THREAD_POOL_HANDLE, MeasurementThread, measDef, &threadID);
+	CmtScheduleThreadPoolFunction(DEFAULT_THREAD_POOL_HANDLE, MeasurementLegacyThread, measDef, &threadID);
 }
+*/
 
-// UI callback to start, stop, or pause the measurement
+// UI callback to start, stop, or pause the MeasurementLegacy
 int CVICALLBACK startstop_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	switch (event)
 	{
 		case EVENT_COMMIT:
-			startMeasurementThread();
+			//startMeasurementLegacyThread();
 			break;
 	}
 	return 0;

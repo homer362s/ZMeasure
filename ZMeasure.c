@@ -1,4 +1,6 @@
 #include <ansi_c.h>
+#include <userint.h>
+#include <asynctmr.h>
 
 #include "fixedziAPI.h"
 #include "meastypes.h"
@@ -7,23 +9,28 @@
 #include "measurementSetup.h"
 
 
+
 // Function prototypes
-struct Measurement* allocateMeasurement();
-void deleteMeasurement(struct Measurement* measurement);
-void initializePanels(struct Measurement* measurement);
-void destroyAllPanels(struct PanelHandles* panels);
+void deleteMeasurementLegacy(struct MeasurementLegacy* MeasurementLegacy);
+void initializePanels(ZMeasure* zmeasure);
+void destroyAllPanels(PrimaryPanels* panels);
+
+void uiConnectToZurich();
 
 
 
 int main (int argc, char *argv[])
 {
-	struct Measurement* measurement = allocateMeasurement();
-	initializePanels(measurement);
+	ZMeasure* zmeasure = allocateSystemVars();
+	initializePanels(zmeasure);
 	
 	RunUserInterface ();
+	
+	// Close all async timers first
+	DiscardAsyncTimer(-1);
 
-	destroyAllPanels(measurement->panels);
-	deleteMeasurement(measurement);
+	destroyAllPanels(zmeasure->panels);
+	deleteSystemVars(zmeasure);
 	
 	return 0;
 }
@@ -31,31 +38,24 @@ int main (int argc, char *argv[])
 
 // Initialization and destruction functions
 
-
-void initializePanels(struct Measurement* measurement)
+void initializePanels(ZMeasure* zmeasure)
 {
-	measurement->panels->main = LoadPanel (0, "ZMeasure.uir", MAINP);
-	SetPanelAttribute(measurement->panels->main, ATTR_CALLBACK_DATA, measurement);
+	PrimaryPanels* panels = zmeasure->panels;
+	panels->main = LoadPanel (0, "ZMeasure.uir", MAINP);
+	SetPanelAttribute(panels->main, ATTR_CALLBACK_DATA, zmeasure);
 	
-	measurement->panels->about = LoadPanel(measurement->panels->main, "ZMeasure.uir", ABOUTP);
+	panels->about = LoadPanel(panels->main, "ZMeasure.uir", ABOUTP);
 	
-	measurement->panels->zconn = LoadPanel(measurement->panels->main, "ZMeasure.uir", ZCONNP);
-	SetPanelAttribute(measurement->panels->zconn, ATTR_CALLBACK_DATA, measurement);
+	panels->newZConn = LoadPanel(panels->main, "ZMeasure.uir", NEWZCONNP);
+	SetPanelAttribute(panels->newZConn, ATTR_CALLBACK_DATA, zmeasure);
 	
-	measurement->panels->znodes = LoadPanel(measurement->panels->main, "ZMeasure.uir", ZNODESP);
-	SetPanelAttribute(measurement->panels->znodes, ATTR_CALLBACK_DATA, measurement);
-	
-	measurement->panels->measvars = LoadPanel(measurement->panels->main, "ZMeasure.uir", MEASVARSP);
-	SetPanelAttribute(measurement->panels->measvars, ATTR_CALLBACK_DATA, measurement);
-	
-	
-	DisplayPanel(measurement->panels->main);
+	// Display some starting panels
+	DisplayPanel(panels->main);
 }
 
-void destroyAllPanels(struct PanelHandles* panels)
+void destroyAllPanels(PrimaryPanels* panels)
 {
-	DiscardPanel(panels->znodes);
-	DiscardPanel(panels->zconn);
+	DiscardPanel(panels->newZConn);
 	DiscardPanel(panels->about); 
 	DiscardPanel(panels->main);
 }
@@ -66,16 +66,195 @@ void userRequestedExit()
 {
 	//disconnectFromZurich();
 	QuitUserInterface(0);
+}
+
+void enableAllZurichUIControls(int panel)
+{
+	int arrayHandle;
 	
+	// Osc Freqs
+	arrayHandle = GetCtrlArrayFromResourceID(panel, FREQ);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Frequency locked indicator
+	arrayHandle = GetCtrlArrayFromResourceID(panel, FREQLOCK);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Demod Oscs
+	arrayHandle = GetCtrlArrayFromResourceID(panel, OSCS);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Harmonic
+	arrayHandle = GetCtrlArrayFromResourceID(panel, HARM);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Demod phase offset
+	arrayHandle = GetCtrlArrayFromResourceID(panel, PHASE);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Auto phase button
+	arrayHandle = GetCtrlArrayFromResourceID(panel, AUTOPHASE);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Input signal
+	arrayHandle = GetCtrlArrayFromResourceID(panel, SIG);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	// Filter order
+	arrayHandle = GetCtrlArrayFromResourceID(panel, ORDER);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	
+	
+}
+
+
+/***** UI management functions *****/
+
+void uiSelectActiveZurich(ZMeasure* zmeasure, ZurichConn* zurich)
+{
+}
+
+// Establish a connection to the zurich for use in the main UI window
+void uiConnectToZurich(ZMeasure* zmeasure)
+{
+	int panel = zmeasure->panels->newZConn;
+	// Read connection information from the UI
+	char address[64];
+	uint16_t port;
+	char device[8];
+	
+	GetCtrlVal(panel, NEWZCONNP_SERVER, address);
+	GetCtrlVal(panel, NEWZCONNP_PORT, &port);
+	GetCtrlVal(panel, NEWZCONNP_DEVICE, device);
+	
+	ZurichConnDef* connDef = newZurichConnDef(address, port, device);
+	
+	// TODO: Handle unsuccessful connections better
+	struct ZurichConn* zurich = newZurichConn(connDef);
+
+	
+	// Update UI
+	char connName[128];
+	getConnName(connDef, connName);
+	// Cast ZurichConn* to char* because the list control only supports char* as a type
+	InsertListItem(zmeasure->panels->main, MAINP_CONNECTIONS, -1, connName, (int)zurich);
+	
+	SetCtrlAttribute(zmeasure->panels->main, MAINP_DISCONNECT, ATTR_DIMMED, 0);
+	
+	// Set up active connection
+	deleteZurichConn(zmeasure->activeConn->conn);
+	ZurichConnDef* activeConnDef = copyZurichConnDef(zurich->connDef);
+	zmeasure->activeConn->conn = newZurichConn(activeConnDef);
+	SetAsyncTimerAttribute(zmeasure->activeConn->timer, ASYNC_ATTR_ENABLED, 1);
+	
+	enableAllZurichUIControls(zmeasure->panels->main);
+}
+
+void setZIValue(ZurichConn* zurich, int panel, int control)
+{
+	int arrayHandle;
+	int index;
+	char path[MAX_PATH_LEN];
+	
+	// Check each control array to figure out which element/index was modified
+	// Oscillator frequency
+	arrayHandle = GetCtrlArrayFromResourceID(panel, FREQ);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		char strvalue[32];
+		double value;
+		sprintf(path, "/%s/oscs/%d/freq", zurich->connDef->device, index);
+		GetCtrlVal(panel, control, strvalue);
+		value = atof(strvalue);
+		ziAPISetValueD(zurich->conn, path, value);
+		return;
+	}
+	
+	// Demod oscillator
+	arrayHandle = GetCtrlArrayFromResourceID(panel, OSCS);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		int value;
+		sprintf(path, "/%s/demods/%d/oscselect", zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueD(zurich->conn, path, value);
+		return;
+	}
+	
+	// Demod harmonic
+	arrayHandle = GetCtrlArrayFromResourceID(panel, HARM);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		int value;
+		sprintf(path, "/%s/demods/%d/harmonic", zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueD(zurich->conn, path, value);
+		return;
+	}
+	
+	// Demod phase shift
+	arrayHandle = GetCtrlArrayFromResourceID(panel, PHASE);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		double value;
+		sprintf(path, "/%s/demods/%d/phaseshift", zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueD(zurich->conn, path, value);
+		return;
+	}
+	
+	// Demod input
+	arrayHandle = GetCtrlArrayFromResourceID(panel, SIG);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		int value;
+		sprintf(path, "/%s/demods/%d/adcselect", zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueD(zurich->conn, path, value);
+		return;
+	}
+	
+	// Demod filter order
+	arrayHandle = GetCtrlArrayFromResourceID(panel, ORDER);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		int value;
+		sprintf(path, "/%s/demods/%d/order", zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueD(zurich->conn, path, value);
+		return;
+	}
 }
 
 /***** UI Callbacks *****/
 
-int CVICALLBACK mainPanel_CB (int panel, int event, void *callbackData,
-		int eventData1, int eventData2)
+int CVICALLBACK mainPanel_CB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_CLOSE)
 		userRequestedExit();
+	if (event == EVENT_PANEL_SIZING) {
+		
+		// Get the current panel size so we can decide if we want to restrict it
+		Rect panelRect;
+		GetPanelEventRect(eventData2, &panelRect);
+		
+		// Enforce a minimum width
+		if (panelRect.width < 500) {
+			panelRect.width = 500;
+			
+		}
+		
+		// Enforce a minimum height
+		if (panelRect.height < 400) {
+			panelRect.height = 400;
+		}
+		
+		// Set control positions
+		SetCtrlAttribute(panel, MAINP_SPLITTER, ATTR_HEIGHT, panelRect.height);
+		
+		SetPanelEventRect(eventData2, panelRect);   
+	}
+		
 	return 0;
 }
 
@@ -91,14 +270,14 @@ int CVICALLBACK subpanel_CB (int panel, int event, void *callbackData, int event
 
 int CVICALLBACK connect_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
-	struct Measurement* measurement;
-	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
+	ZMeasure* zmeasure;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
 	switch (event)
 	{
 		case EVENT_COMMIT:
 			switch (control) {
-				case ZCONNP_CONNECT:
-					connectToZurich(measurement);
+				case NEWZCONNP_CONNECT:
+					uiConnectToZurich(zmeasure);
 					HidePanel(panel);
 					break;
 			}
@@ -122,23 +301,40 @@ int CVICALLBACK closePanel_CB (int panel, int control, int event, void *callback
 
 void CVICALLBACK openPanel_CB (int menuBar, int menuItem, void *callbackData, int panel)
 {
-	struct Measurement* measurement;
-	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
+	struct MeasurementLegacy* MeasurementLegacy;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &MeasurementLegacy);
 	switch(menuItem) {
 		case MENUBAR_HELP_ABOUT:
-			DisplayPanel(measurement->panels->about);
+			DisplayPanel(MeasurementLegacy->panels->about);
 			break;
 		case MENUBAR_SETUP_ZURICH:
-			DisplayPanel(measurement->panels->znodes);
+			DisplayPanel(MeasurementLegacy->panels->znodes);
 			break;
 		case MENUBAR_SETUP_MEASUREMENT:
-			DisplayPanel(measurement->panels->measvars);
+			DisplayPanel(MeasurementLegacy->panels->measvars);
 			break;
 			
 	}
 }
 
+
+// Called from the "Exit" menu item to quit the program
 void CVICALLBACK exit_CB (int menuBar, int menuItem, void *callbackData,int panel)
 {
 	userRequestedExit();
+}
+
+int CVICALLBACK setZIValue_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	ZMeasure* zmeasure;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+	int fakeptr;
+	switch (event)
+	{
+		case EVENT_COMMIT:
+			GetCtrlVal(panel, MAINP_CONNECTIONS, &fakeptr);
+			setZIValue((ZurichConn*)fakeptr, panel, control);
+			break;
+	}
+	return 0;
 }
