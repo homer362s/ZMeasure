@@ -1,3 +1,4 @@
+#include <utility.h>
 #include <ansi_c.h>
 #include <asynctmr.h>
 
@@ -18,7 +19,7 @@ ZMeasure* allocateSystemVars()
 	ZMeasure* zmeasure = malloc(sizeof(ZMeasure));
 	
 	zmeasure->activeConn = malloc(sizeof(ZMeasure));
-	zmeasure->activeConn->timer = NewAsyncTimer(1.0, -1, 0, updateZurichUIControls, zmeasure);
+	zmeasure->activeConn->timer = 0;
 	zmeasure->activeConn->conn = 0;
 	
 	zmeasure->panels = malloc(sizeof(PrimaryPanels));
@@ -34,6 +35,7 @@ ZMeasure* allocateSystemVars()
 void deleteSystemVars(ZMeasure* zmeasure)
 {
 	free(zmeasure->activeConn);
+	printf("freed activeConn\n");
 	
 	// Delete each connection
 	for(int i = 0;i < zmeasure->connCount;i++) {
@@ -43,6 +45,42 @@ void deleteSystemVars(ZMeasure* zmeasure)
 	// Delete remaining variables
 	free(zmeasure->panels);
 	free(zmeasure);
+}
+
+// This function is more complicated than I think it should need to be.
+// When calling DiscardAsyncTimer() we seem to trigger another call to the async timer callback
+// which then causes a "general protection fault" on a call to a ziAPI function. 
+// By disabling the timer and then waiting a period of time we can be reasonably sure all the
+// callbacks have completed and we can disable it without this happening. 
+// It seems like we should just be able to call DiscardAsyncTimer() and be done with it though.
+void deleteUITimerThread(ZMeasure* zmeasure)
+{
+	if (zmeasure->activeConn->conn) {
+		// Disable the timer in question
+		SetAsyncTimerAttribute(zmeasure->activeConn->timer, ASYNC_ATTR_ENABLED, 0);
+		
+		// Get time to wait to be reasonably sure the async callback is finished
+		double deltaTime;
+		GetAsyncTimerAttribute(zmeasure->activeConn->timer, ASYNC_ATTR_DELTA_TIME, &deltaTime);
+		
+		// Delay 3 times this time, as a safety margin.
+		Delay(deltaTime*3);
+		
+		// Discard the async timer
+		DiscardAsyncTimer(zmeasure->activeConn->timer);
+		
+		// Clean up the memory
+		deleteZurichConn(zmeasure->activeConn->conn);
+		zmeasure->activeConn->conn = 0;
+	}
+}
+
+void newUITimerThread(ZMeasure* zmeasure, ZurichConnDef* oldConnDef)
+{
+	ZurichConnDef* connDef = copyZurichConnDef(oldConnDef);
+	ZurichConn* conn = newZurichConn(connDef);
+	zmeasure->activeConn->conn = conn;
+	zmeasure->activeConn->timer = NewAsyncTimer(0.01, -1, 1, updateZurichUIControls, zmeasure);
 }
 
 ZurichConnDef* newZurichConnDef(char* address, uint16_t port, char* device)
@@ -159,21 +197,65 @@ struct ZurichData* getZurichDataFromNode(struct MeasurementLegacy* MeasurementLe
 }
 
 
+void updateControlD(ZurichConn* zurich, int panel, int handleArray, char* fmtpath)
+{
+	char path[MAX_PATH_LEN];
+	int count;
+	ZIDoubleData value;
+	double oldValue;
+	int ctrlHandle;
+	
+	int controlArray = GetCtrlArrayFromResourceID(panel, handleArray);
+	GetNumCtrlArrayItems(controlArray, &count);
+	for(int i = 0;i < count;i++) {
+		sprintf(path, fmtpath, zurich->connDef->device, i);
+		ziAPIGetValueD(zurich->conn, path, &value);
+		ctrlHandle = GetCtrlArrayItem(controlArray, i);
+		GetCtrlVal(panel, ctrlHandle, &oldValue);
+		if (oldValue != (double)value) {
+			SetCtrlVal(panel, ctrlHandle, (double)value);
+		}
+	}
+}
+
+void updateControlI(ZurichConn* zurich, int panel, int handleArray, char* fmtpath)
+{
+	char path[MAX_PATH_LEN];
+	int count;
+	ZIIntegerData value;
+	int oldValue;
+	int ctrlHandle;
+	
+	int controlArray = GetCtrlArrayFromResourceID(panel, handleArray);
+	GetNumCtrlArrayItems(controlArray, &count);
+	for(int i = 0;i < count;i++) {
+		sprintf(path, fmtpath, zurich->connDef->device, i);
+		ziAPIGetValueI(zurich->conn, path, &value);
+		ctrlHandle = GetCtrlArrayItem(controlArray, i);
+		GetCtrlVal(panel, ctrlHandle, &oldValue);
+		if (oldValue != (int)value) {
+			SetCtrlVal(panel, ctrlHandle, (int)value);
+		}
+	}
+}
+
+
 // Called in an Async Timer to update the displayed UI values
 int CVICALLBACK updateZurichUIControls(int reserved, int timerId, int event, void *callbackData, int eventData1, int eventData2)
 {
+	printf("starting update\n");
 	ZMeasure* zmeasure = callbackData;
 	ZurichConn* zurich = zmeasure->activeConn->conn;
 	
 	int panel = zmeasure->panels->main;
 	char path[MAX_PATH_LEN];
-	char numstr[32];
 	int controlArray;
 	int ctrlHandle;
 	int count;
 	
 	// Get osc frequencies
 	double freq;
+	char numstr[32], oldnumstr[32];
 	controlArray = GetCtrlArrayFromResourceID(panel, FREQ);
 	GetNumCtrlArrayItems(controlArray, &count);
 	for(int i = 0;i < count;i++) {
@@ -181,65 +263,50 @@ int CVICALLBACK updateZurichUIControls(int reserved, int timerId, int event, voi
 		ziAPIGetValueD(zurich->conn, path, &freq);
 		ctrlHandle = GetCtrlArrayItem(controlArray, i);
 		formatNumberScientific(numstr, freq);
-		SetCtrlVal(panel, ctrlHandle, numstr);
+		GetCtrlVal(panel, ctrlHandle, oldnumstr);
+		if (strcmp(oldnumstr, numstr) != 0) {
+			SetCtrlVal(panel, ctrlHandle, numstr);
+		}
 	}
 	
 	// Get each demod's oscillator
-	ZIIntegerData osc; 
-	controlArray = GetCtrlArrayFromResourceID(panel, OSCS);
-	GetNumCtrlArrayItems(controlArray, &count);
-	for(int i = 0;i < count;i++) {
-		sprintf(path, "/%s/demods/%d/oscselect", zurich->connDef->device, i);
-		ziAPIGetValueI(zurich->conn, path, &osc);
-		ctrlHandle = GetCtrlArrayItem(controlArray, i);
-		SetCtrlVal(panel, ctrlHandle, (int)osc);
-	}
+	updateControlI(zurich, panel, OSCS, "/%s/demods/%d/oscselect");
 	
 	// Get each demod's harmonic
-	ZIIntegerData harm;
-	controlArray = GetCtrlArrayFromResourceID(panel, HARM);
-	GetNumCtrlArrayItems(controlArray, &count);
-	for(int i = 0;i < count;i++) {
-		sprintf(path, "/%s/demods/%d/harmonic", zurich->connDef->device, i);
-		ziAPIGetValueI(zurich->conn, path, &harm);
-		ctrlHandle = GetCtrlArrayItem(controlArray, i);
-		SetCtrlVal(panel, ctrlHandle, (int)harm);
-	}
+	updateControlI(zurich, panel, HARM, "/%s/demods/%d/harmonic");
 	
 	// Get each demod's phase
-	ZIDoubleData phase;
-	controlArray = GetCtrlArrayFromResourceID(panel, PHASE);
-	GetNumCtrlArrayItems(controlArray, &count);
-	for(int i = 0;i < count;i++) {
-		sprintf(path, "/%s/demods/%d/phaseshift", zurich->connDef->device, i);
-		ziAPIGetValueI(zurich->conn, path, &phase);
-		ctrlHandle = GetCtrlArrayItem(controlArray, i);
-		SetCtrlVal(panel, ctrlHandle, phase);
-	}
+	updateControlD(zurich, panel, PHASE, "/%s/demods/%d/phaseshift");
+	
 	
 	// Get each demod's input signal
-	ZIIntegerData sig;
-	controlArray = GetCtrlArrayFromResourceID(panel, SIG);
-	GetNumCtrlArrayItems(controlArray, &count);
-	for(int i = 0;i < count;i++) {
-		sprintf(path, "/%s/demods/%d/adcselect", zurich->connDef->device, i);
-		ziAPIGetValueI(zurich->conn, path, &sig);
-		ctrlHandle = GetCtrlArrayItem(controlArray, i);
-		SetCtrlVal(panel, ctrlHandle, (int)sig);
-	}
+	updateControlI(zurich, panel, SIG, "/%s/demods/%d/adcselect");
 	
 	// Get each demod's filter order
-	ZIIntegerData order;
-	controlArray = GetCtrlArrayFromResourceID(panel, ORDER);
-	GetNumCtrlArrayItems(controlArray, &count);
-	for(int i = 0;i < count;i++) {
-		sprintf(path, "/%s/demods/%d/order", zurich->connDef->device, i);
-		ziAPIGetValueI(zurich->conn, path, &order);
-		ctrlHandle = GetCtrlArrayItem(controlArray, i);
-		SetCtrlVal(panel, ctrlHandle, (int)order);
-	}
+	updateControlI(zurich, panel, ORDER, "/%s/demods/%d/order");
 	
+	printf("finished update\n");
 	return 0;
+}
+
+void autophase(int panel, int control)
+{
+	// Get UI selected connection (we can't use zmeasure->activeConn since its in a different thread)
+	int fakeptr;
+	GetCtrlVal(panel, MAINP_CONNECTIONS, &fakeptr);
+	ZurichConn* zurich = (ZurichConn*)fakeptr;
+	
+	char path[MAX_PATH_LEN];
+	int index;
+	int arrayHandle = GetCtrlArrayFromResourceID(panel, AUTOPHASE);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		char strvalue[32];
+		double value;
+		sprintf(path, "/%s/demods/%d/phaseadjust", zurich->connDef->device, index);
+		ziAPISetValueI(zurich->conn, path, 1);
+		return;
+	}
 }
 
 void formatNumberScientific(char* str, double value)

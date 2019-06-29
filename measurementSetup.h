@@ -21,5 +21,11 @@ void deleteActiveConn(ZurichConn* zurich);
 
 ZurichConnDef* copyZurichConnDef(ZurichConnDef* connDefOri);
 
+void autophase(int panel, int control);
+
+
+void deleteUITimerThread(ZMeasure* zmeasure);
+void newUITimerThread(ZMeasure* zmeasure, ZurichConnDef* oldConnDef);
+
 
 #endif  /* ndef __MeasurementLegacySetuph_H__ */

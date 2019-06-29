@@ -1,3 +1,4 @@
+#include <utility.h>
 #include <ansi_c.h>
 #include <userint.h>
 #include <asynctmr.h>
@@ -26,8 +27,8 @@ int main (int argc, char *argv[])
 	
 	RunUserInterface ();
 	
-	// Close all async timers first
-	DiscardAsyncTimer(-1);
+	// Close UI async timer
+	deleteUITimerThread(zmeasure);
 
 	destroyAllPanels(zmeasure->panels);
 	deleteSystemVars(zmeasure);
@@ -62,9 +63,10 @@ void destroyAllPanels(PrimaryPanels* panels)
 
 
 
-void userRequestedExit()
+void userRequestedExit(ZMeasure* zmeasure)
 {
-	//disconnectFromZurich();
+	// Hide the main panel so it looks like we quit faster than we actually do
+	HidePanel(zmeasure->panels->main);
 	QuitUserInterface(0);
 }
 
@@ -142,10 +144,8 @@ void uiConnectToZurich(ZMeasure* zmeasure)
 	SetCtrlAttribute(zmeasure->panels->main, MAINP_DISCONNECT, ATTR_DIMMED, 0);
 	
 	// Set up active connection
-	deleteZurichConn(zmeasure->activeConn->conn);
-	ZurichConnDef* activeConnDef = copyZurichConnDef(zurich->connDef);
-	zmeasure->activeConn->conn = newZurichConn(activeConnDef);
-	SetAsyncTimerAttribute(zmeasure->activeConn->timer, ASYNC_ATTR_ENABLED, 1);
+	deleteUITimerThread(zmeasure);
+	newUITimerThread(zmeasure, zurich->connDef);
 	
 	enableAllZurichUIControls(zmeasure->panels->main);
 }
@@ -231,7 +231,7 @@ void setZIValue(ZurichConn* zurich, int panel, int control)
 int CVICALLBACK mainPanel_CB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_CLOSE)
-		userRequestedExit();
+		userRequestedExit((ZMeasure*) callbackData);
 	if (event == EVENT_PANEL_SIZING) {
 		
 		// Get the current panel size so we can decide if we want to restrict it
@@ -241,7 +241,6 @@ int CVICALLBACK mainPanel_CB (int panel, int event, void *callbackData, int even
 		// Enforce a minimum width
 		if (panelRect.width < 500) {
 			panelRect.width = 500;
-			
 		}
 		
 		// Enforce a minimum height
@@ -321,7 +320,9 @@ void CVICALLBACK openPanel_CB (int menuBar, int menuItem, void *callbackData, in
 // Called from the "Exit" menu item to quit the program
 void CVICALLBACK exit_CB (int menuBar, int menuItem, void *callbackData,int panel)
 {
-	userRequestedExit();
+	ZMeasure* zmeasure;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+	userRequestedExit(zmeasure);
 }
 
 int CVICALLBACK setZIValue_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
@@ -334,6 +335,30 @@ int CVICALLBACK setZIValue_CB (int panel, int control, int event, void *callback
 		case EVENT_COMMIT:
 			GetCtrlVal(panel, MAINP_CONNECTIONS, &fakeptr);
 			setZIValue((ZurichConn*)fakeptr, panel, control);
+			break;
+	}
+	return 0;
+}
+
+int CVICALLBACK autophase_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	switch (event)
+	{
+		case EVENT_COMMIT:
+			autophase(panel, control);
+			break;
+	}
+	return 0;
+}
+
+int CVICALLBACK stopUpdates_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	ZMeasure* zmeasure;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+	switch (event)
+	{
+		case EVENT_COMMIT:
+			deleteUITimerThread(zmeasure);
 			break;
 	}
 	return 0;

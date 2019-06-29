@@ -35,52 +35,52 @@
 #define  MAINP_FREQ_1                     13      /* control type: string, callback function: setZIValue_CB */
 #define  MAINP_HARM_8                     14      /* control type: numeric, callback function: setZIValue_CB */
 #define  MAINP_HARM_7                     15      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_AUTOPHASE_8                16      /* control type: command, callback function: setZIValue_CB */
+#define  MAINP_AUTOPHASE_8                16      /* control type: command, callback function: autophase_CB */
 #define  MAINP_PHASE_8                    17      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_8                      18      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_8                    19      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARM_6                     20      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_AUTOPHASE_7                21      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_7                    22      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_7                      23      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_7                    24      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARM_5                     25      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_AUTOPHASE_6                26      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_6                    27      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_6                      28      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_6                    29      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARM_4                     30      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_AUTOPHASE_5                31      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_5                    32      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_5                      33      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_5                    34      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARM_3                     35      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_AUTOPHASE_4                36      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_4                    37      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_4                      38      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_4                    39      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARM_2                     40      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_OSC_8                      41      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_7                      42      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_6                      43      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_5                      44      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_4                      45      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_3                      46      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_2                      47      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_OSC_1                      48      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_AUTOPHASE_3                49      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_3                    50      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_3                      51      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_3                    52      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARM_1                     53      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_FREQLABEL                  54      /* control type: textMsg, callback function: (none) */
-#define  MAINP_AUTOPHASE_2                55      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_2                    56      /* control type: numeric, callback function: setZIValue_CB */
-#define  MAINP_SIG_2                      57      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_ORDER_2                    58      /* control type: ring, callback function: setZIValue_CB */
-#define  MAINP_HARMLABEL                  59      /* control type: textMsg, callback function: (none) */
-#define  MAINP_AUTOPHASE_1                60      /* control type: command, callback function: setZIValue_CB */
-#define  MAINP_PHASE_1                    61      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_8                    18      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARM_6                     19      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_AUTOPHASE_7                20      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_7                    21      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_7                    22      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARM_5                     23      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_AUTOPHASE_6                24      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_6                    25      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_6                    26      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARM_4                     27      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_AUTOPHASE_5                28      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_5                    29      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_5                    30      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARM_3                     31      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_AUTOPHASE_4                32      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_4                    33      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_4                    34      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARM_2                     35      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_OSC_8                      36      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_7                      37      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_6                      38      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_5                      39      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_4                      40      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_3                      41      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_2                      42      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_OSC_1                      43      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_AUTOPHASE_3                44      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_3                    45      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_3                    46      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARM_1                     47      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_FREQLABEL                  48      /* control type: textMsg, callback function: (none) */
+#define  MAINP_AUTOPHASE_2                49      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_2                    50      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_ORDER_2                    51      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_HARMLABEL                  52      /* control type: textMsg, callback function: (none) */
+#define  MAINP_AUTOPHASE_1                53      /* control type: command, callback function: autophase_CB */
+#define  MAINP_PHASE_1                    54      /* control type: numeric, callback function: setZIValue_CB */
+#define  MAINP_SIG_8                      55      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_SIG_7                      56      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_SIG_6                      57      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_SIG_5                      58      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_SIG_4                      59      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_SIG_3                      60      /* control type: ring, callback function: setZIValue_CB */
+#define  MAINP_SIG_2                      61      /* control type: ring, callback function: setZIValue_CB */
 #define  MAINP_SIG_1                      62      /* control type: ring, callback function: setZIValue_CB */
 #define  MAINP_ORDER_1                    63      /* control type: ring, callback function: setZIValue_CB */
 #define  MAINP_PHASELABEL                 64      /* control type: textMsg, callback function: (none) */
@@ -114,9 +114,10 @@
 #define  MAINP_ROWLABEL2_8                92      /* control type: textMsg, callback function: (none) */
 #define  MAINP_TEXTMSG_2                  93      /* control type: textMsg, callback function: (none) */
 #define  MAINP_TEXTMSG                    94      /* control type: textMsg, callback function: (none) */
-#define  MAINP_DECORATION_3               95      /* control type: deco, callback function: (none) */
-#define  MAINP_DECORATION_2               96      /* control type: deco, callback function: (none) */
-#define  MAINP_OSCLABEL                   97      /* control type: textMsg, callback function: (none) */
+#define  MAINP_STOPUPDATES                95      /* control type: command, callback function: stopUpdates_CB */
+#define  MAINP_DECORATION_3               96      /* control type: deco, callback function: (none) */
+#define  MAINP_DECORATION_2               97      /* control type: deco, callback function: (none) */
+#define  MAINP_OSCLABEL                   98      /* control type: textMsg, callback function: (none) */
 
 #define  MEASVARSP                        3       /* callback function: subpanel_CB */
 #define  MEASVARSP_OUTVARTREE             2       /* control type: tree, callback function: (none) */
@@ -166,6 +167,7 @@
 
      /* Callback Prototypes: */
 
+int  CVICALLBACK autophase_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK closePanel_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK connect_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 void CVICALLBACK exit_CB(int menubar, int menuItem, void *callbackData, int panel);
@@ -175,6 +177,7 @@ int  CVICALLBACK nodeTree_CB(int panel, int control, int event, void *callbackDa
 void CVICALLBACK openPanel_CB(int menubar, int menuItem, void *callbackData, int panel);
 int  CVICALLBACK setZIValue_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK startstop_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
+int  CVICALLBACK stopUpdates_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK subpanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 
 
