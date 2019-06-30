@@ -4,10 +4,12 @@
 #define __meastypes_H__
 
 // Required headers for this file
+#include <ansi_c.h>
 #include "fixedziAPI.h"
 
 #define MAX_DEV_NAME_LENGTH 8
 #define MAX_DEVICE_CONNECTIONS 16
+#define MAX_MEASUREMENTS 64
 #define MAX_NODE_PATH 128
 #define MAX_MEAS_STEPS 10
 #define MAX_MEAS_VARS 10
@@ -33,23 +35,15 @@ typedef struct RelativeSweep RelativeSweep;
 struct ZMeasure {
 	PrimaryPanels* panels;								// Panels for all of the primary functions of the UI
 	ZurichConn* connections[MAX_DEVICE_CONNECTIONS];	// Array of connections to zurich devices
-	uint32_t connCount;									// Number of active connections to zurich devices
+	size_t connCount;									// Number of active connections to zurich devices
 	ActiveConn* activeConn;								// Connection displayed in the main UI window
+	Measurement* measurements[MAX_MEASUREMENTS];		// Array of each defined measurement
+	size_t measurementCount;							// Number of currently defined measurements
 };
 
 struct ActiveConn {
 	int timer;					// Async timer reference
 	ZurichConn* conn;			// Zurich connection used in the Async timer thread
-};
-
-
-// A definition of a MeasurementLegacy
-// A MeasurementLegacy is made up of one ore more MeasurementLegacy steps
-// Each step is made up of zero or more MeasurementLegacy variables
-// (zero for repeated MeasurementLegacys for averaging)
-struct Measurement {
-	uint32_t nSteps;					// Number of MeasurementLegacy steps
-	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each MeasurementLegacy step	
 };
 
 
@@ -83,11 +77,24 @@ struct ZurichConnDef {
 };
 
 
-// Information about a MeasurementLegacy step.
+// A definition of a Measurement
+// A MeasurementLegacy is made up of one ore more Measurement steps
+// Each step is made up of zero or more Measurement variables
+// (zero for repeated Measurements for averaging)
+struct Measurement {
+	uint32_t nSteps;					// Number of MeasurementLegacy steps
+	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each MeasurementLegacy step
+	ZMeasure* zmeasure;					// Parent program
+	int panel;							// Settings panel for this measurement
+};
+
+// Information about a Measurement step.
 struct MeasStep {
-	uint32_t nPoints;				// Number of points in this MeasurementLegacy step
-	MeasVar* vars[MAX_MEAS_VARS];	// Array of variables to modify at this MeasurementLegacy step
-	float delay;					// Time delay, in seconds,between each MeasurementLegacy at this step
+	uint32_t nPoints;				// Number of points in this Measurement step
+	uint32_t nVars;					// Number of measurement variables at this step
+	MeasVar* vars[MAX_MEAS_VARS];	// Array of variables to modify at this Measurement step
+	float delay;					// Time delay, in seconds,between each Measurement at this step
+	Measurement* parent;			// Parent measurement
 };
 
 
@@ -103,7 +110,7 @@ struct RelativeSweep {
 	double coeff;		// Multiplicative coefficient. This variable's value is coeff * value of ref
 };
 
-// Information about a MeasurementLegacy variable
+// Information about a Measurement variable
 enum SweepType{SWEEP_TYPE_SINGLE, SWEEP_TYPE_DUAL, SWEEP_TYPE_RELATIVE};   
 struct MeasVar {
 	ZurichConn* conn;			// Connection to use for this variable
@@ -115,8 +122,8 @@ struct MeasVar {
 		RelativeSweep relativeSweep;
 	};
 	double* values;				// Array of precomputed values for the sweep
+	MeasStep* parent;			// Parent MeasStep
 };
-
 
 
 
@@ -149,20 +156,25 @@ struct MeasurementLegacy {
 	struct MeasurementLegacyNodes* measNodes;					// Paths to measure
 };
 
-// Definition of a MeasurementLegacy to make
-// Passed to the MeasurementLegacy thread to initiate a MeasurementLegacy
-struct MeasDef {
-	char* ziaddr;
-	uint16_t ziport;
-	char* zidev;
-	char** measnodes;
-	//CmtTSQHandle* toMeasHandle;
-	//CmtTSQHandle* fromMeasHandle;
-};
 
-struct ThreadMessage {
-	
-};
-	
+/***** Function Prototypes *****/
+
+// Memory management
+ZurichConnDef* newZurichConnDef(char* address, uint16_t port, char* device);
+ZurichConnDef* copyZurichConnDef(ZurichConnDef* connDefOri);
+void deleteZurichConnDef(ZurichConnDef* connDef);
+ZurichConn* newZurichConn(ZurichConnDef* connDef);
+void deleteZurichConn(ZurichConn* zurich);
+Measurement* newMeasurement(ZMeasure* zmeasure);
+void deleteMeasurement(Measurement* measurement);
+MeasStep* newMeasStep(Measurement* measurement);
+void deleteMeasStep(MeasStep* measStep);
+MeasVar* newMeasVar(MeasStep* measStep);
+void deleteMeasVar(MeasVar* measVar);
+
+// Utility
+int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, uint32_t length);
+int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
+int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 
 #endif  /* ndef __meastypes_H__ */

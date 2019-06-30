@@ -1,6 +1,7 @@
 #ifndef __MeasurementLegacySetup_H__
 #define __MeasurementLegacySetup_H__
 
+#include "meastypes.h"
 
 void connectToZurich(struct MeasurementLegacy* MeasurementLegacy);
 void disconnectFromZurich(struct MeasurementLegacy* MeasurementLegacy, struct ZurichData* zurich);

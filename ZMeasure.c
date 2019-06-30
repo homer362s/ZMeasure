@@ -112,14 +112,17 @@ void enableAllZurichUIControls(int panel)
 
 /***** UI management functions *****/
 
+// Called to change which zurich device is displayed in the main UI
 void uiSelectActiveZurich(ZMeasure* zmeasure, ZurichConn* zurich)
 {
+	// TODO: Implement this function
 }
 
 // Establish a connection to the zurich for use in the main UI window
 void uiConnectToZurich(ZMeasure* zmeasure)
 {
 	int panel = zmeasure->panels->newZConn;
+	
 	// Read connection information from the UI
 	char address[64];
 	uint16_t port;
@@ -133,7 +136,7 @@ void uiConnectToZurich(ZMeasure* zmeasure)
 	
 	// TODO: Handle unsuccessful connections better
 	struct ZurichConn* zurich = newZurichConn(connDef);
-
+	addZurichConnToZMeasure(zmeasure, zurich);
 	
 	// Update UI
 	char connName[128];
@@ -150,85 +153,102 @@ void uiConnectToZurich(ZMeasure* zmeasure)
 	enableAllZurichUIControls(zmeasure->panels->main);
 }
 
-void setZIValue(ZurichConn* zurich, int panel, int control)
+
+int setZIValueAdvD(ZurichConn* zurich, int panel, int control, int handleArray, char* fmtpath)
 {
-	int arrayHandle;
 	int index;
-	char path[MAX_PATH_LEN];
-	
-	// Check each control array to figure out which element/index was modified
-	// Oscillator frequency
-	arrayHandle = GetCtrlArrayFromResourceID(panel, FREQ);
+	int arrayHandle = GetCtrlArrayFromResourceID(panel, FREQ);
 	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
 	if (index != -1) {
 		char strvalue[32];
 		double value;
+		char path[MAX_PATH_LEN];
 		sprintf(path, "/%s/oscs/%d/freq", zurich->connDef->device, index);
 		GetCtrlVal(panel, control, strvalue);
 		int retval = readNumberScientific(strvalue, &value);
 		if (retval == 0) {
 			ziAPISetValueD(zurich->conn, path, value);
-			
 			// Change active item
 			int nextArrayHandle = GetCtrlArrayFromResourceID(panel, OSCS);
 			int nextControl = GetCtrlArrayItem(nextArrayHandle, index);
 			SetActiveCtrl(panel, nextControl);
+			return 1;
 		}
+	}
+	
+	return 0;
+}
+
+int setZIValueD(ZurichConn* zurich, int panel, int control, int handleArray, char* fmtpath)
+{
+	int index;
+	int arrayHandle = GetCtrlArrayFromResourceID(panel, handleArray);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		double value;
+		char path[MAX_PATH_LEN];
+		sprintf(path, fmtpath, zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueD(zurich->conn, path, value);
+		return 1;
+	}
+	
+	return 0;
+}
+
+int setZIValueI(ZurichConn* zurich, int panel, int control, int handleArray, char* fmtpath)
+{
+	int index;
+	int arrayHandle = GetCtrlArrayFromResourceID(panel, handleArray);
+	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
+	if (index != -1) {
+		int value;
+		char path[MAX_PATH_LEN];
+		sprintf(path, fmtpath, zurich->connDef->device, index);
+		GetCtrlVal(panel, control, &value);
+		ziAPISetValueI(zurich->conn, path, value);
+		return 1;
+	}
+	
+	return 0;
+}
+
+
+// Called whenever the user changes one of the lock-in parameters to update that
+// parameter on the actual tool
+void setZIValue(ZurichConn* zurich, int panel, int control)
+{
+	// Check each control array to figure out which element/index was modified
+	// Ordered in approximately decreasing order of use to improve performance
+	// by the smallest of margins
+	
+	// Oscillator frequency
+	if (setZIValueAdvD(zurich, panel, control, FREQ, "/%s/oscs/%d/freq")) {
 		return;
 	}
 	
 	// Demod oscillator
-	arrayHandle = GetCtrlArrayFromResourceID(panel, OSCS);
-	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
-	if (index != -1) {
-		int value;
-		sprintf(path, "/%s/demods/%d/oscselect", zurich->connDef->device, index);
-		GetCtrlVal(panel, control, &value);
-		ziAPISetValueD(zurich->conn, path, value);
-		return;
-	}
-	
-	// Demod harmonic
-	arrayHandle = GetCtrlArrayFromResourceID(panel, HARM);
-	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
-	if (index != -1) {
-		int value;
-		sprintf(path, "/%s/demods/%d/harmonic", zurich->connDef->device, index);
-		GetCtrlVal(panel, control, &value);
-		ziAPISetValueD(zurich->conn, path, value);
+	if (setZIValueI(zurich, panel, control, OSCS, "/%s/demods/%d/oscselect")) {
 		return;
 	}
 	
 	// Demod phase shift
-	arrayHandle = GetCtrlArrayFromResourceID(panel, PHASE);
-	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
-	if (index != -1) {
-		double value;
-		sprintf(path, "/%s/demods/%d/phaseshift", zurich->connDef->device, index);
-		GetCtrlVal(panel, control, &value);
-		ziAPISetValueD(zurich->conn, path, value);
+	if (setZIValueD(zurich, panel, control, PHASE, "/%s/demods/%d/phaseshift")) {
 		return;
 	}
 	
 	// Demod input
-	arrayHandle = GetCtrlArrayFromResourceID(panel, SIG);
-	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
-	if (index != -1) {
-		int value;
-		sprintf(path, "/%s/demods/%d/adcselect", zurich->connDef->device, index);
-		GetCtrlVal(panel, control, &value);
-		ziAPISetValueD(zurich->conn, path, value);
+	if (setZIValueI(zurich, panel, control, SIG, "/%s/demods/%d/adcselect")) {
 		return;
 	}
 	
 	// Demod filter order
-	arrayHandle = GetCtrlArrayFromResourceID(panel, ORDER);
-	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
-	if (index != -1) {
-		int value;
-		sprintf(path, "/%s/demods/%d/order", zurich->connDef->device, index);
-		GetCtrlVal(panel, control, &value);
-		ziAPISetValueD(zurich->conn, path, value);
+	if (setZIValueI(zurich, panel, control, ORDER, "/%s/demods/%d/order")) {
+		return;
+	}
+	
+	// Demod harmonic
+	if (setZIValueI(zurich, panel, control, HARM, "/%s/demods/%d/harmonic")) {
 		return;
 	}
 }
@@ -307,19 +327,18 @@ int CVICALLBACK closePanel_CB (int panel, int control, int event, void *callback
 
 void CVICALLBACK openPanel_CB (int menuBar, int menuItem, void *callbackData, int panel)
 {
-	struct MeasurementLegacy* MeasurementLegacy;
-	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &MeasurementLegacy);
+	// Load the ZMeasure struct
+	struct ZMeasure* zmeasure;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+	
+	// Determine which menu item was selected
 	switch(menuItem) {
 		case MENUBAR_HELP_ABOUT:
-			DisplayPanel(MeasurementLegacy->panels->about);
+			DisplayPanel(zmeasure->panels->about);
 			break;
-		case MENUBAR_SETUP_ZURICH:
-			DisplayPanel(MeasurementLegacy->panels->znodes);
+		case MENUBAR_SETUP_CONNECTION_NEW:
+			DisplayPanel(zmeasure->panels->newZConn);
 			break;
-		case MENUBAR_SETUP_MEASUREMENT:
-			DisplayPanel(MeasurementLegacy->panels->measvars);
-			break;
-			
 	}
 }
 
@@ -358,15 +377,27 @@ int CVICALLBACK autophase_CB (int panel, int control, int event, void *callbackD
 	return 0;
 }
 
-int CVICALLBACK stopUpdates_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK enableDemod_CB (int panel, int control, int event,
+								void *callbackData, int eventData1, int eventData2)
 {
-	ZMeasure* zmeasure;
-	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
 	switch (event)
 	{
 		case EVENT_COMMIT:
-			deleteUITimerThread(zmeasure);
+
 			break;
 	}
 	return 0;
 }
+
+int CVICALLBACK enableOutput_CB (int panel, int control, int event,
+								 void *callbackData, int eventData1, int eventData2)
+{
+	switch (event)
+	{
+		case EVENT_COMMIT:
+
+			break;
+	}
+	return 0;
+}
+

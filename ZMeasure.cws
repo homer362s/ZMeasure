@@ -30,7 +30,7 @@ Save Changes Before Compiling = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 14
+Number of Opened Files = 13
 Window Confinement Region Enabled = True
 MainColumnWidth = 200
 FileDateColumnWidth = 70
@@ -40,7 +40,7 @@ FileSizeColumnWidth = 70
 Version = 1700
 Don't Update DistKit = False
 Platform Code = 4
-Build Configuration = "Debug"
+Build Configuration = "Debug64"
 Warn User If Debugging Release = 1
 Batch Build Release = False
 Batch Build Debug = False
@@ -48,7 +48,7 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.uir"
 File Type = "User Interface Resource"
-Disk Date = 3644673326
+Disk Date = 3644771957
 In Projects = "1,"
 Window Top = 152
 Window Left = 74
@@ -59,32 +59,32 @@ Window Z-Order = 2
 [File 0002]
 Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.c"
 File Type = "CSource"
-Disk Date = 3644673509
+Disk Date = 3644774676
 In Projects = "1,"
 Window Top = 32
 Window Left = 10
-Window Z-Order = 1
-Source Window State = "1,172,172,172,68,76,76,0,0,204,0,16,0,1,0,47,139,0,172,72,349,747,1,0,"
+Window Z-Order = 3
+Source Window State = "1,56,56,56,5,21,21,0,0,84,0,16,0,1,0,25,12,0,33,16,349,747,1,0,"
 
 [File 0003]
 Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.c"
 File Type = "CSource"
-Disk Date = 3644673326
+Disk Date = 3644774971
 In Projects = "1,"
 Window Top = 182
 Window Left = 90
-Window Z-Order = 3
-Source Window State = "1,217,217,217,12,36,12,0,0,84,0,238,0,3,0,25,187,0,217,40,349,747,1,15,"
+Window Z-Order = 7
+Source Window State = "1,45,48,48,0,6,6,0,0,84,0,240,0,5,0,25,15,0,44,62,349,747,1,15,"
 
 [File 0004]
 Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
 File Type = "Include"
-Disk Date = 3644672216
+Disk Date = 3644774633
 In Projects = "1,"
 Window Top = 242
 Window Left = 122
-Window Z-Order = 4
-Source Window State = "1,23,23,23,15,23,23,0,0,84,0,0,0,0,0,25,0,0,24,53,349,747,1,16,"
+Window Z-Order = 11
+Source Window State = "1,23,23,23,15,23,23,0,0,84,0,0,0,0,0,25,0,0,3,22,349,747,1,16,"
 
 [File 0005]
 Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
@@ -93,7 +93,7 @@ Disk Date = 3644489369
 In Projects = "1,"
 Window Top = 92
 Window Left = 42
-Window Z-Order = 5
+Window Z-Order = 12
 Source Window State = "1,8,8,8,10,32,32,0,0,84,0,175,0,4,0,25,0,0,8,26,349,747,1,16,"
 
 [File 0006]
@@ -103,7 +103,7 @@ Disk Date = 3644489386
 In Projects = "1,"
 Window Top = 122
 Window Left = 58
-Window Z-Order = 9
+Window Z-Order = 13
 Source Window State = "1,3,3,3,10,32,32,0,0,84,0,0,0,0,0,25,0,0,3,26,349,747,1,0,"
 
 [File 0007]
@@ -113,7 +113,7 @@ Disk Date = 3644489351
 In Projects = "1,"
 Window Top = 302
 Window Left = 154
-Window Z-Order = 10
+Window Z-Order = 4
 Source Window State = "1,4,4,4,10,32,32,0,0,84,0,3,0,52,0,25,0,0,4,11,349,747,1,19,"
 
 [File 0008]
@@ -123,71 +123,40 @@ Disk Date = 3644489336
 In Projects = "1,"
 Window Top = 32
 Window Left = 10
-Window Z-Order = 11
+Window Z-Order = 6
 Source Window State = "1,9,9,9,62,66,66,0,0,84,0,0,0,0,0,25,0,0,12,56,349,747,1,16,"
 
 [File 0009]
-Path = "/c/Users/user/Desktop/ZMeasure/sweep_u.uir"
-File Type = "User Interface Resource"
-Disk Date = 3644183269
-In Projects = "1,"
-Window Top = 62
-Window Left = 26
-Window Height = 349
-Window Width = 683
-Window Z-Order = 8
-
-[File 0010]
-Path = "/c/Users/user/Desktop/ZMeasure/sweep.c"
-File Type = "CSource"
-Disk Date = 3644418493
-In Projects = "1,"
-Window Top = 182
-Window Left = 90
-Window Z-Order = 14
-Source Window State = "1,0,5,5,0,0,10,0,0,84,0,0,0,0,0,25,0,0,0,63,349,747,1,0,"
-
-[File 0011]
-Path = "/c/Users/user/Desktop/ZMeasure/sweep.h"
-File Type = "Include"
-Disk Date = 3644183239
-In Projects = "1,"
-Window Top = 212
-Window Left = 106
-Window Z-Order = 13
-Source Window State = "1,1,1,1,8,19,19,0,0,84,0,0,0,0,0,25,0,0,4,2,349,747,1,0,"
-
-[File 0012]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement.c"
 File Type = "CSource"
-Disk Date = 3644622617
+Disk Date = 3644774704
 In Projects = "1,"
 Window Top = 92
 Window Left = 42
-Window Z-Order = 7
-Source Window State = "1,9,9,9,10,27,27,0,0,84,0,0,0,0,0,25,70,0,99,14,349,747,1,0,"
+Window Z-Order = 1
+Source Window State = "1,1,1,1,0,22,22,0,0,204,0,0,0,0,0,47,0,0,18,89,349,747,1,0,"
 
-[File 0013]
+[File 0010]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement.h"
 File Type = "Include"
-Disk Date = 3644489336
+Disk Date = 3644774714
 In Projects = "1,"
 Window Top = 122
 Window Left = 58
-Window Z-Order = 12
-Source Window State = "1,1,1,1,8,25,25,0,0,84,0,0,0,0,0,25,0,0,1,25,349,747,1,0,"
+Window Z-Order = 9
+Source Window State = "1,3,3,3,21,22,22,0,2,84,0,0,0,0,0,25,0,0,3,37,349,747,1,0,"
 
-[File 0014]
+[File 0011]
 Path = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
 File Type = "Include"
-Disk Date = 3644621722
+Disk Date = 3644774731
 In Projects = "1,"
 Window Top = 152
 Window Left = 74
-Window Z-Order = 6
-Source Window State = "1,131,131,131,16,33,33,0,0,84,0,0,0,0,0,25,29,0,65,80,349,747,1,11,"
+Window Z-Order = 10
+Source Window State = "1,172,173,173,0,3,3,0,0,84,0,0,0,0,0,25,135,0,174,10,349,747,1,11,"
 
-[File 0015]
+[File 0012]
 Path = "/c/Users/user/Desktop/ZMeasure/zilock.c"
 File Type = "CSource"
 Disk Date = 3643808050
@@ -196,24 +165,51 @@ Window Top = 62
 Window Left = 26
 Source Window State = "1,2,2,2,0,19,19,0,0,0,0,154,0,154,0,0,57,0,2,22,349,747,1,0,"
 
-[File 0016]
+[File 0013]
 Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
 File Type = "Include"
 Disk Date = 3644086097
 In Projects = "1,"
 Window Top = 212
 Window Left = 106
-Source Window State = "1,324,324,1164,23,30,47,0,0,0,0,0,0,0,0,0,66,0,78,0,349,747,1,0,"
+Source Window State = "1,324,324,1164,23,30,47,0,0,84,0,0,0,0,0,25,2446,0,2487,0,349,747,1,0,"
 
-[File 0017]
+[File 0014]
 Path = "/c/Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.lib"
 File Type = "Library"
 Disk Date = 3633650144
 In Projects = "1,"
 
-[File 0018]
+[File 0015]
 Path = "/c/Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.dll"
 File Type = "DLL"
+Disk Date = 3633650144
+In Projects = "1,"
+
+[File 0016]
+Path = "/c/Users/user/Desktop/ZMeasure/meastypes.c"
+File Type = "CSource"
+Disk Date = 3644774558
+In Projects = "1,"
+Window Top = 302
+Window Left = 154
+Window Z-Order = 8
+Source Window State = "1,116,116,116,8,29,29,0,0,84,0,0,0,0,0,25,170,0,215,13,349,747,1,0,"
+
+[File 0017]
+Path = "/c/Users/user/Desktop/ZMeasure/measurement_u.uir"
+File Type = "User Interface Resource"
+Disk Date = 3644772875
+In Projects = ""
+Window Top = 212
+Window Left = 106
+Window Height = 349
+Window Width = 747
+Window Z-Order = 5
+
+[File 0018]
+Path = "/c/Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win64.lib"
+File Type = "Library"
 Disk Date = 3633650144
 In Projects = "1,"
 
@@ -226,12 +222,11 @@ Tab 0005 = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
 Tab 0006 = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
 Tab 0007 = "/c/Users/user/Desktop/ZMeasure/measurementNodes.c"
 Tab 0008 = "/c/Users/user/Desktop/ZMeasure/measurementNodes.h"
-Tab 0009 = "/c/Users/user/Desktop/ZMeasure/sweep_u.uir"
-Tab 0010 = "/c/Users/user/Desktop/ZMeasure/sweep.c"
-Tab 0011 = "/c/Users/user/Desktop/ZMeasure/sweep.h"
-Tab 0012 = "/c/Users/user/Desktop/ZMeasure/measurement.c"
-Tab 0013 = "/c/Users/user/Desktop/ZMeasure/measurement.h"
-Tab 0014 = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
+Tab 0009 = "/c/Users/user/Desktop/ZMeasure/measurement_u.uir"
+Tab 0010 = "/c/Users/user/Desktop/ZMeasure/measurement.c"
+Tab 0011 = "/c/Users/user/Desktop/ZMeasure/measurement.h"
+Tab 0012 = "/c/Users/user/Desktop/ZMeasure/meastypes.c"
+Tab 0013 = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
 
 [Default Build Config 0001 Debug]
 Generate Browse Info = True
