@@ -24,7 +24,7 @@
 #define  MAINP_NEWMEAS                    2       /* control type: command, callback function: manageMeasurements_CB */
 #define  MAINP_CONNECT                    3       /* control type: command, callback function: manageConnections_CB */
 #define  MAINP_CONNECTIONS                4       /* control type: listBox, callback function: (none) */
-#define  MAINP_MEASUREMENTS               5       /* control type: tree, callback function: (none) */
+#define  MAINP_MEASUREMENTS               5       /* control type: tree, callback function: editMeasurement_CB */
 #define  MAINP_FREQ_1                     6       /* control type: string, callback function: setZIValue_CB */
 #define  MAINP_OSC_1                      7       /* control type: ring, callback function: setZIValue_CB */
 #define  MAINP_HARM_1                     8       /* control type: numeric, callback function: setZIValue_CB */
@@ -234,6 +234,7 @@
 int  CVICALLBACK autophase_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK closePanel_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK connect_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
+int  CVICALLBACK editMeasurement_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK enableDemod_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK enableOutput_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 void CVICALLBACK exit_CB(int menubar, int menuItem, void *callbackData, int panel);

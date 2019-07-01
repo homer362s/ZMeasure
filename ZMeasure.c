@@ -1,3 +1,4 @@
+#include "measurement_u.h"
 #include <utility.h>
 #include <ansi_c.h>
 #include <userint.h>
@@ -9,6 +10,7 @@
 #include "ZMeasure.h"
 #include "measurementSetup.h"
 
+#include "measurement.h"
 
 
 // Function prototypes
@@ -294,6 +296,7 @@ int CVICALLBACK subpanel_CB (int panel, int event, void *callbackData, int event
 	return 0;
 }
 
+
 int CVICALLBACK connect_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	ZMeasure* zmeasure;
@@ -377,8 +380,7 @@ int CVICALLBACK autophase_CB (int panel, int control, int event, void *callbackD
 	return 0;
 }
 
-int CVICALLBACK enableDemod_CB (int panel, int control, int event,
-								void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK enableDemod_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	switch (event)
 	{
@@ -389,8 +391,7 @@ int CVICALLBACK enableDemod_CB (int panel, int control, int event,
 	return 0;
 }
 
-int CVICALLBACK enableOutput_CB (int panel, int control, int event,
-								 void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK enableOutput_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	switch (event)
 	{
@@ -400,4 +401,25 @@ int CVICALLBACK enableOutput_CB (int panel, int control, int event,
 	}
 	return 0;
 }
+
+int CVICALLBACK editMeasurement_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	switch (event)
+	{
+		case EVENT_COMMIT:
+			switch (eventData1) {
+				case LEFT_DOUBLE_CLICK:
+				case ENTER_KEY:
+					int index = eventData2;
+					int fakeptr;
+					GetTreeItemAttribute(panel, MAINP_MEASUREMENTS, index, ATTR_CTRL_VAL, &fakeptr);
+					Measurement* measurement = (Measurement*)fakeptr;
+					raiseMeasurementPanel(measurement);
+			}
+			// Figure out which measurement this is
+			break;
+	}
+	return 0;
+}
+
 

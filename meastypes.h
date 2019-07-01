@@ -5,6 +5,7 @@
 
 // Required headers for this file
 #include <ansi_c.h>
+#include <utility.h>
 #include "fixedziAPI.h"
 
 #define MAX_DEV_NAME_LENGTH 8
@@ -77,6 +78,8 @@ struct ZurichConnDef {
 };
 
 
+enum MeasAction {MEAS_ACTION_NONE, MEAS_ACTION_STOP, MEAS_ACTION_PAUSE, MEAS_ACTION_RESUME};
+
 // A definition of a Measurement
 // A MeasurementLegacy is made up of one ore more Measurement steps
 // Each step is made up of zero or more Measurement variables
@@ -86,6 +89,10 @@ struct Measurement {
 	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each MeasurementLegacy step
 	ZMeasure* zmeasure;					// Parent program
 	int panel;							// Settings panel for this measurement
+	ZurichConnDef* connDef;				// Zurich connection definitions
+	CmtThreadLockHandle threadLock;		// Thread lock
+	CmtThreadFunctionID threadID;		// Measurement thread ID
+	enum MeasAction requestAction;		// Requested action such as stop, pause, resume, etc.
 };
 
 // Information about a Measurement step.
@@ -173,7 +180,7 @@ MeasVar* newMeasVar(MeasStep* measStep);
 void deleteMeasVar(MeasVar* measVar);
 
 // Utility
-int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, uint32_t length);
+int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length);
 int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 

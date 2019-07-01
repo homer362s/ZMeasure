@@ -269,7 +269,7 @@ int readNumberScientific(char* instr, double* value)
 	}
 	
 	// Find end of numeric portion:
-	int endIndex = len;
+	size_t endIndex = len;
 	for(int i = startIndex;i < len;i++) {
 		c = str[i];
 		if ((c >= '0' && c <= '9') || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+') {
@@ -393,7 +393,7 @@ int CVICALLBACK manageConnections_CB (int panel, int control, int event, void *c
 					DisplayPanel(zmeasure->panels->newZConn);
 					break;
 				case MAINP_DISCONNECT:
-					int treeSelectedIndex, treeSelectedRoot;
+					//int treeSelectedIndex, treeSelectedRoot;
 					//int fakenode;
 					//struct ZurichNode* node;
 					//struct ZurichData* zurich;

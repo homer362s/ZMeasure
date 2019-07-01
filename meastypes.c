@@ -108,6 +108,10 @@ Measurement* newMeasurement(ZMeasure* zmeasure)
 	}
 	measurement->panel = 0;
 	
+	measurement->requestAction = MEAS_ACTION_NONE;
+	
+	CmtNewLock(0, 0, &measurement->threadLock);
+	
 	return measurement;
 }
 
@@ -116,6 +120,8 @@ void deleteMeasurement(Measurement* measurement)
 	for(int i = 0;i < measurement->nSteps;i++) {
 		deleteMeasStep(measurement->steps[i]);
 	}
+	
+	CmtDiscardLock(measurement->threadLock);
 	
 	free(measurement);
 }
@@ -169,7 +175,7 @@ void deleteMeasVar(MeasVar* measVar)
 
 // Get the index of a ZurichConn in a ZMeasure struct
 // Returns -1 if not found
-int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, uint32_t length)
+int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length)
 {
 	for(int i = 0;i < length;i++) {
 		if (zmeasure->connections[i] == zurich) {
