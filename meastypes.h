@@ -7,6 +7,7 @@
 #include <ansi_c.h>
 #include <utility.h>
 #include "fixedziAPI.h"
+#include "tree.h"
 
 #define MAX_DEV_NAME_LENGTH 8
 #define MAX_DEVICE_CONNECTIONS 16
@@ -85,14 +86,15 @@ enum MeasAction {MEAS_ACTION_NONE, MEAS_ACTION_STOP, MEAS_ACTION_PAUSE, MEAS_ACT
 // Each step is made up of zero or more Measurement variables
 // (zero for repeated Measurements for averaging)
 struct Measurement {
-	uint32_t nSteps;					// Number of MeasurementLegacy steps
-	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each MeasurementLegacy step
+	uint32_t nSteps;					// Number of Measurement steps
+	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each Measurement step
 	ZMeasure* zmeasure;					// Parent program
 	int panel;							// Settings panel for this measurement
 	ZurichConnDef* connDef;				// Zurich connection definitions
 	CmtThreadLockHandle threadLock;		// Thread lock
 	CmtThreadFunctionID threadID;		// Measurement thread ID
 	enum MeasAction requestAction;		// Requested action such as stop, pause, resume, etc.
+	TreeNode* measTree;					// User specified measurement nodes
 };
 
 // Information about a Measurement step.

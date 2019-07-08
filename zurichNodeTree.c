@@ -64,8 +64,8 @@ void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, i
 		}		
 		
 		// Set names for each child
-		int namelen;
-		int strStart = 0;
+		size_t namelen;
+		size_t strStart = 0;
 		for(int i = 0;i < nodeCount;i++) {
 			// Copy the name into a new string
 			namelen = strlen(nodestr + strStart);

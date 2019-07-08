@@ -40,7 +40,7 @@
 #define  MAINP_AMP2ENABLE_1               18      /* control type: LED, callback function: enableOutput_CB */
 #define  MAINP_DECORATION_2               19      /* control type: deco, callback function: (none) */
 #define  MAINP_DELETEMEAS                 20      /* control type: command, callback function: manageMeasurements_CB */
-#define  MAINP_SPLITTER                   21      /* control type: splitter, callback function: (none) */
+#define  MAINP_VERTSPLIT                  21      /* control type: splitter, callback function: (none) */
 #define  MAINP_DISCONNECT                 22      /* control type: command, callback function: manageConnections_CB */
 #define  MAINP_FREQ_8                     23      /* control type: string, callback function: setZIValue_CB */
 #define  MAINP_FREQ_7                     24      /* control type: string, callback function: setZIValue_CB */
@@ -148,7 +148,7 @@
 #define  MAINP_FREQLOCK_1                 126     /* control type: LED, callback function: setZIValue_CB */
 #define  MAINP_AMP2ENABLE_6               127     /* control type: LED, callback function: enableOutput_CB */
 #define  MAINP_AMP1ENABLE_6               128     /* control type: LED, callback function: enableOutput_CB */
-#define  MAINP_SPLITTER_2                 129     /* control type: splitter, callback function: (none) */
+#define  MAINP_HORIZSPLIT                 129     /* control type: splitter, callback function: (none) */
 #define  MAINP_TEXTMSG_2                  130     /* control type: textMsg, callback function: (none) */
 #define  MAINP_AMP2ENABLE_5               131     /* control type: LED, callback function: enableOutput_CB */
 #define  MAINP_AMP1ENABLE_5               132     /* control type: LED, callback function: enableOutput_CB */

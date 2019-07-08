@@ -24,6 +24,7 @@ void uiConnectToZurich();
 
 int main (int argc, char *argv[])
 {
+	initMeasNodes();
 	ZMeasure* zmeasure = allocateSystemVars();
 	initializePanels(zmeasure);
 	
@@ -255,12 +256,32 @@ void setZIValue(ZurichConn* zurich, int panel, int control)
 	}
 }
 
-/***** UI Callbacks *****/
+// Called to rearrange panel controls to properly fit a given panel size
+void fixControlPositions(int panel)
+{
+	int pwidth, pheight, height, top;
+	GetPanelAttribute(panel, ATTR_WIDTH, &pwidth);
+	GetPanelAttribute(panel, ATTR_HEIGHT, &pheight);
+	
+	SetCtrlAttribute(panel, MAINP_VERTSPLIT, ATTR_HEIGHT, pheight);
+	
+	GetCtrlAttribute(panel, MAINP_MEASUREMENTS, ATTR_TOP, &top);
+	height = pheight - top - 35;
+	SetCtrlAttribute(panel, MAINP_MEASUREMENTS, ATTR_HEIGHT, height);
+	SetCtrlAttribute(panel, MAINP_NEWMEAS, ATTR_TOP, pheight-30);
+	SetCtrlAttribute(panel, MAINP_DELETEMEAS, ATTR_TOP, pheight-30);
+}
 
+/***** UI Callbacks *****/
 int CVICALLBACK mainPanel_CB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
-	if (event == EVENT_CLOSE)
+	// When the user clicks the 'X' in the top right corner to close the window
+	if (event == EVENT_CLOSE) {
 		userRequestedExit((ZMeasure*) callbackData);
+		return 0;
+	}
+	
+	// Whever the panel is resized by dragging a corner or side
 	if (event == EVENT_PANEL_SIZING) {
 		
 		// Get the current panel size so we can decide if we want to restrict it
@@ -273,14 +294,26 @@ int CVICALLBACK mainPanel_CB (int panel, int event, void *callbackData, int even
 		}
 		
 		// Enforce a minimum height
-		if (panelRect.height < 400) {
-			panelRect.height = 400;
+		if (panelRect.height < 525) {
+			panelRect.height = 525;
 		}
 		
-		// Set control positions
-		SetCtrlAttribute(panel, MAINP_SPLITTER, ATTR_HEIGHT, panelRect.height);
+		SetPanelEventRect(eventData2, panelRect); 
 		
-		SetPanelEventRect(eventData2, panelRect);   
+		fixControlPositions(panel);
+		return 0;
+	}
+	
+	// When the user un-maximizes the window
+	if (event == EVENT_PANEL_RESTORE) {
+		fixControlPositions(panel);
+		return 0;
+	}
+	
+	// When the user maximizes the window
+	if (event == EVENT_PANEL_MAXIMIZE) {
+		fixControlPositions(panel);
+		return 0;
 	}
 		
 	return 0;

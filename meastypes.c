@@ -112,6 +112,10 @@ Measurement* newMeasurement(ZMeasure* zmeasure)
 	
 	CmtNewLock(0, 0, &measurement->threadLock);
 	
+	measurement->measTree = newTree(5);
+	measurement->measTree->data = malloc(1 * sizeof(char));
+	strcpy(measurement->measTree->data, "");
+	
 	return measurement;
 }
 
