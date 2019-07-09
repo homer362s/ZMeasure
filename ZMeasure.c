@@ -17,6 +17,11 @@
 void deleteMeasurementLegacy(struct MeasurementLegacy* MeasurementLegacy);
 void initializePanels(ZMeasure* zmeasure);
 void destroyAllPanels(PrimaryPanels* panels);
+static ZurichConn* uiGetActiveZurichConn(ZMeasure* zmeasure);
+
+static void enableAllZurichUIControls(int panel);
+static void disableAllZurichUIControls(int panel);
+static void setStateAllZurichUIControls(int panel, int state);
 
 void uiConnectToZurich();
 
@@ -75,41 +80,49 @@ void userRequestedExit(ZMeasure* zmeasure)
 
 void enableAllZurichUIControls(int panel)
 {
+	setStateAllZurichUIControls(panel, 0);
+}
+
+void disableAllZurichUIControls(int panel)
+{
+	setStateAllZurichUIControls(panel, 1);
+}
+
+void setStateAllZurichUIControls(int panel, int state)
+{
 	int arrayHandle;
 	
 	// Osc Freqs
 	arrayHandle = GetCtrlArrayFromResourceID(panel, FREQ);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Frequency locked indicator
 	arrayHandle = GetCtrlArrayFromResourceID(panel, FREQLOCK);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Demod Oscs
 	arrayHandle = GetCtrlArrayFromResourceID(panel, OSCS);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Harmonic
 	arrayHandle = GetCtrlArrayFromResourceID(panel, HARM);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Demod phase offset
 	arrayHandle = GetCtrlArrayFromResourceID(panel, PHASE);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Auto phase button
 	arrayHandle = GetCtrlArrayFromResourceID(panel, AUTOPHASE);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Input signal
 	arrayHandle = GetCtrlArrayFromResourceID(panel, SIG);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 	
 	// Filter order
 	arrayHandle = GetCtrlArrayFromResourceID(panel, ORDER);
-	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, 0);
-	
-	
+	SetCtrlArrayAttribute(arrayHandle, ATTR_DIMMED, state);
 }
 
 
@@ -118,7 +131,8 @@ void enableAllZurichUIControls(int panel)
 // Called to change which zurich device is displayed in the main UI
 void uiSelectActiveZurich(ZMeasure* zmeasure, ZurichConn* zurich)
 {
-	// TODO: Implement this function
+	deleteUITimerThread(zmeasure);
+	newUITimerThread(zmeasure, zurich->connDef);
 }
 
 // Establish a connection to the zurich for use in the main UI window
@@ -137,25 +151,72 @@ void uiConnectToZurich(ZMeasure* zmeasure)
 	
 	ZurichConnDef* connDef = newZurichConnDef(address, port, device);
 	
-	// TODO: Handle unsuccessful connections better
 	struct ZurichConn* zurich = newZurichConn(connDef);
+	if (zurich == 0) {
+		printf("Connection failed.\nSomething needs to be fixed.\nIt's probably your fault.\n");
+		deleteZurichConnDef(connDef);
+		return;
+	}
 	addZurichConnToZMeasure(zmeasure, zurich);
 	
 	// Update UI
 	char connName[128];
 	getConnName(connDef, connName);
-	// Cast ZurichConn* to char* because the list control only supports char* as a type
+	// Cast ZurichConn* to int because the list control doesn't support void* as a type
 	InsertListItem(zmeasure->panels->main, MAINP_CONNECTIONS, -1, connName, (int)zurich);
 	
 	SetCtrlAttribute(zmeasure->panels->main, MAINP_DISCONNECT, ATTR_DIMMED, 0);
 	
 	// Set up active connection
-	deleteUITimerThread(zmeasure);
-	newUITimerThread(zmeasure, zurich->connDef);
+	uiSelectActiveZurich(zmeasure, zurich);
 	
 	enableAllZurichUIControls(zmeasure->panels->main);
 }
 
+// Terminate an active zurich connection in the main UI window
+void uiDisconnectFromZurich(ZMeasure* zmeasure)
+{
+	ZurichConn* zurich = uiGetActiveZurichConn(zmeasure);
+	if (zurich == 0) {
+		return;
+	}
+	
+	int index;
+	GetCtrlIndex(zmeasure->panels->main, MAINP_CONNECTIONS, &index);
+	if (index < 0) {
+		return;
+	}
+	
+	removeZurichConnFromZMeasure(zmeasure, zurich);
+	
+	DeleteListItem(zmeasure->panels->main, MAINP_CONNECTIONS, index, 1);
+	deleteZurichConn(zurich);
+	
+	// Establish UI for newly selected zurich device
+	zurich = uiGetActiveZurichConn(zmeasure);
+	if (zurich == 0) {
+		disableAllZurichUIControls(zmeasure->panels->main);
+		return;
+	}
+	
+	uiSelectActiveZurich(zmeasure, zurich);
+}
+
+
+// Returns a ZurichConn for the currently selected zurich device
+static ZurichConn* uiGetActiveZurichConn(ZMeasure* zmeasure)
+{
+	int index;
+	GetCtrlIndex(zmeasure->panels->main, MAINP_CONNECTIONS, &index);
+	if (index < 0) {
+		return 0;
+	}
+	
+	int fake;
+	GetCtrlVal(zmeasure->panels->main, MAINP_CONNECTIONS, &fake);
+	
+	return (ZurichConn*)fake;
+}
 
 int setZIValueAdvD(ZurichConn* zurich, int panel, int control, int handleArray, char* fmtpath)
 {
@@ -456,3 +517,71 @@ int CVICALLBACK editMeasurement_CB (int panel, int control, int event, void *cal
 }
 
 
+int CVICALLBACK manageConnections_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	ZMeasure* zmeasure;
+	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+	
+	switch (event)
+	{
+		case EVENT_COMMIT:
+			switch (control) {
+				case MAINP_CONNECT:
+					DisplayPanel(zmeasure->panels->newZConn);
+					break;
+				case MAINP_DISCONNECT:
+					uiDisconnectFromZurich(zmeasure);
+					//int treeSelectedIndex, treeSelectedRoot;
+					//int fakenode;
+					//struct ZurichNode* node;
+					//struct ZurichData* zurich;
+
+					// Get the selected item index
+					//GetActiveTreeItem(panel, ZNODESP_SETTINGTREE, &treeSelectedIndex);
+					
+					// Get the root node for the selected item
+					//GetTreeItem (panel, ZNODESP_SETTINGTREE, VAL_ANCESTOR, treeSelectedIndex, VAL_LAST, VAL_NEXT_PLUS_SELF, 0, &treeSelectedRoot);
+					
+					// Value will be -1 if the node is the root
+					//if(treeSelectedRoot == -1) {
+					//	treeSelectedRoot = treeSelectedIndex;
+					//}
+					
+					// Get the ZurichNode for the root
+					//GetTreeItemAttribute(panel, ZNODESP_SETTINGTREE, treeSelectedRoot, ATTR_CTRL_VAL, &fakenode);
+					//node = (struct ZurichNode*) fakenode;
+					//zurich = getZurichDataFromNode(MeasurementLegacy, node);
+					
+					// Disconnect from the selected zurich
+					//disconnectFromZurich(MeasurementLegacy, zurich);
+					
+					// Remove the root item from the tree. 
+					//DeleteListItem(panel, MAINP_SETTINGTREE, treeSelectedRoot, 1);
+					
+					// If there are no more nodes then disable the disconnect button
+					//if(main->connCount <= 0) {
+					//	SetCtrlAttribute(panel, MAINP_DISCONNECT, ATTR_DIMMED, 1);
+					//}
+					break;
+			}
+			break;
+	}
+	return 0;
+}
+
+
+int CVICALLBACK activeZurichChange_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_VAL_CHANGED) {
+		ZMeasure* zmeasure;
+		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+		
+		int fake;
+		GetCtrlVal(panel, MAINP_CONNECTIONS, &fake);
+		ZurichConn* zurich = (ZurichConn*)fake;
+		
+		uiSelectActiveZurich(zmeasure, zurich);
+	}
+
+	return 0;
+}

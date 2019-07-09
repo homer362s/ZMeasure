@@ -380,58 +380,6 @@ int CVICALLBACK nodeTree_CB (int panel, int control, int event, void *callbackDa
 	return 0;
 }
 
-int CVICALLBACK manageConnections_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
-{
-	ZMeasure* zmeasure;
-	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
-	
-	switch (event)
-	{
-		case EVENT_COMMIT:
-			switch (control) {
-				case MAINP_CONNECT:
-					DisplayPanel(zmeasure->panels->newZConn);
-					break;
-				case MAINP_DISCONNECT:
-					//int treeSelectedIndex, treeSelectedRoot;
-					//int fakenode;
-					//struct ZurichNode* node;
-					//struct ZurichData* zurich;
-
-					// Get the selected item index
-					//GetActiveTreeItem(panel, ZNODESP_SETTINGTREE, &treeSelectedIndex);
-					
-					// Get the root node for the selected item
-					//GetTreeItem (panel, ZNODESP_SETTINGTREE, VAL_ANCESTOR, treeSelectedIndex, VAL_LAST, VAL_NEXT_PLUS_SELF, 0, &treeSelectedRoot);
-					
-					// Value will be -1 if the node is the root
-					//if(treeSelectedRoot == -1) {
-					//	treeSelectedRoot = treeSelectedIndex;
-					//}
-					
-					// Get the ZurichNode for the root
-					//GetTreeItemAttribute(panel, ZNODESP_SETTINGTREE, treeSelectedRoot, ATTR_CTRL_VAL, &fakenode);
-					//node = (struct ZurichNode*) fakenode;
-					//zurich = getZurichDataFromNode(MeasurementLegacy, node);
-					
-					// Disconnect from the selected zurich
-					//disconnectFromZurich(MeasurementLegacy, zurich);
-					
-					// Remove the root item from the tree. 
-					//DeleteListItem(panel, MAINP_SETTINGTREE, treeSelectedRoot, 1);
-					
-					// If there are no more nodes then disable the disconnect button
-					//if(main->connCount <= 0) {
-					//	SetCtrlAttribute(panel, MAINP_DISCONNECT, ATTR_DIMMED, 1);
-					//}
-					break;
-			}
-			break;
-	}
-	return 0;
-}
-
-
 
 int CVICALLBACK manageMeasurements_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {

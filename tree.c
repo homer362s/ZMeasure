@@ -11,10 +11,10 @@ static int getTreeNodeIndex(TreeNode* tree);
 // allocSize -> Length of TreeNode.children to allocate
 TreeNode* newTree(size_t allocSize)
 {
-	TreeNode* tree = malloc(sizeof(TreeNode));
+	TreeNode* tree = malloc(sizeof(*tree));
 	if (tree) {
 		tree->allocSize = allocSize;
-		tree->children = malloc(tree->allocSize * sizeof(TreeNode*));
+		tree->children = malloc(tree->allocSize * sizeof(*tree->children));
 		for (int i = 0;i < tree->allocSize;i++) {
 			tree->children[i] = 0;
 		}

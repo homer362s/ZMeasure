@@ -61,6 +61,7 @@ ZurichConn* newZurichConn(ZurichConnDef* connDef)
 	if (zurich->retVal != ZI_INFO_SUCCESS) {
 		ziAPIGetError(zurich->retVal, &zurich->errBuffer, NULL);
 		fprintf(stderr, "Can't init Connection: %s\n", zurich->errBuffer);
+		free(zurich);
 		return 0;
 	}
 	
@@ -70,6 +71,7 @@ ZurichConn* newZurichConn(ZurichConnDef* connDef)
 	if (zurich->retVal != ZI_INFO_SUCCESS) {
 		ziAPIGetError(zurich->retVal, &zurich->errBuffer, NULL);
 		fprintf(stderr, "Error, can't connect to the Data Server: `%s`.\n", zurich->errBuffer);
+		free(zurich);
 		return 0;
 	} 
 	
@@ -85,6 +87,8 @@ ZurichConn* newZurichConn(ZurichConnDef* connDef)
 	return zurich;
 }
 
+// Delete a ZurichConn struct and everything inside
+// This terminates the connection first if one exists
 void deleteZurichConn(ZurichConn* zurich)
 {
 	if (zurich) {

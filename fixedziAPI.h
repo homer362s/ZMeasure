@@ -76,7 +76,8 @@ extern "C" {
   #define DEPRECATED(decl) __declspec(deprecated) decl
   #define DEPRECATED_ENUM(decl) decl
 #else
-  #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+  // This warning was getting annoying and I don't know how to get rid of it.
+  //#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
   #define DEPRECATED(decl) decl
   #define DEPRECATED_ENUM(decl) decl
 #endif

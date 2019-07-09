@@ -1,3 +1,5 @@
+#include "ZMeasure.h"
+
 // Contains functions relating to physically taking a measurement
 #include "measurement.h"
 
@@ -375,3 +377,4 @@ int CVICALLBACK finishSelectingNodes_CB (int panel, int control, int event, void
 	}
 	return 0;
 }
+
