@@ -5,6 +5,7 @@
 
 // Private function prototypes
 static int getTreeNodeIndex(TreeNode* tree);
+static void deleteTreeNode(TreeNode* tree, void delfcn(void* data));
 
 
 // Allocate memory for a new tree
@@ -15,7 +16,7 @@ TreeNode* newTree(size_t allocSize)
 	if (tree) {
 		tree->allocSize = allocSize;
 		tree->children = malloc(tree->allocSize * sizeof(*tree->children));
-		for (int i = 0;i < tree->allocSize;i++) {
+		for (size_t i = 0;i < tree->allocSize;i++) {
 			tree->children[i] = 0;
 		}
 		tree->nChildren = 0;
@@ -26,7 +27,28 @@ TreeNode* newTree(size_t allocSize)
 	return tree;
 }
 
-// Delete a tree and free all the memory
+// Delete a tree node and free all its memory
+// This should usually not be called since it doesn't properly
+// clean up the parent's reference list
+static void deleteTreeNode(TreeNode* tree, void delfcn(void* data))
+{
+	// Free children
+	for(size_t i = 0;i < tree->nChildren;i++) {
+		deleteTreeNode(tree->children[i], delfcn);
+	}
+	free(tree->children);
+	tree->children = 0;
+	
+	// Free this node
+	delfcn(tree->data);
+	tree->data = 0;
+	
+	free(tree);
+	tree = 0;
+}
+
+// Delete a tree and free all the memory. Must be called on the parent
+// it is an error if it is not and nothing is freed
 // delfcn -> Function that takes TreeNode.data and frees it
 // Returns 0 if successfully freed, 1 if there was an error
 int deleteTree(TreeNode* tree, void delfcn(void* data))
@@ -36,18 +58,7 @@ int deleteTree(TreeNode* tree, void delfcn(void* data))
 		return 1;
 	}
 	
-	// Free children
-	for(int i = 0;i < tree->nChildren;i++) {
-		tree->children[i];
-	}
-	free(tree->children);
-	tree->children = 0;
-	
-	delfcn(tree->data);
-	tree->data = 0;
-	
-	free(tree);
-	tree = 0;
+	deleteTreeNode(tree, delfcn);
 	
 	return 0;
 }
@@ -80,7 +91,7 @@ void graftTree(TreeNode* baseTree, TreeNode* childTree)
 		} else if (baseTree->allocSize <= 20) {
 			newSize = baseTree->allocSize * 2;
 		} else {
-			newSize = baseTree->allocSize * 1.5;
+			newSize = (size_t)(baseTree->allocSize * 1.5);
 		}
 		baseTree->children = realloc(baseTree->children, newSize * sizeof(TreeNode));
 		baseTree->allocSize = newSize;
@@ -111,7 +122,7 @@ int detachNodeFromTree(TreeNode* childTree)
 	}
 	
 	// Shift siblings forward to fill gap
-	for (int i = index+1;i < parent->nChildren;i++) {
+	for (size_t i = index+1;i < parent->nChildren;i++) {
 		parent->children[i-1] = parent->children[i];
 	}
 	parent->nChildren -= 1;
@@ -134,7 +145,7 @@ void deleteNodeFromTree(TreeNode* childTree, void delfcn(void*))
 void depthFirstIterTree(TreeNode* tree, size_t startingDepth, void (*fcn)(TreeNode* node, size_t depth))
 {
 	(*fcn)(tree, startingDepth);
-	for(int i = 0;i < tree->nChildren;i++) {
+	for(size_t i = 0;i < tree->nChildren;i++) {
 		depthFirstIterTree(tree->children[i], startingDepth+1, fcn);
 	}
 } 
@@ -154,7 +165,7 @@ void sortStrIterFcn(TreeNode* node, size_t depth)
 	TreeNode* tmp;
 	
 	// Sort this node
-	for (int i = 1;i < node->nChildren;i++) {
+	for (size_t i = 1;i < node->nChildren;i++) {
 		// Compare nodes i-1 and i
 		if (strcmp(node->children[i-1]->data, node->children[i]->data) > 0) {
 			tmp = node->children[i-1];
@@ -177,7 +188,7 @@ static int getTreeNodeIndex(TreeNode* tree)
 	}
 	
 	// Iterate over parent's children looking for ourself
-	for (int i = 0;i < parent->nChildren;i++) {
+	for (size_t i = 0;i < parent->nChildren;i++) {
 		if (parent->children[i] == tree) {
 			return i;
 		}

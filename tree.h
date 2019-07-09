@@ -9,9 +9,9 @@ typedef struct TreeNode TreeNode;
 struct TreeNode {
 	struct TreeNode* parent;
 	void* data;							// Data stored in this node
-	size_t nChildren;						// Number of child nodes
+	size_t nChildren;					// Number of child nodes
 	struct TreeNode** children;			// array of child nodes
-	size_t allocSize;						// malloc length of TreeNode.children;
+	size_t allocSize;					// malloc length of TreeNode.children;
 };
 		
 // Allocate memory for a new tree

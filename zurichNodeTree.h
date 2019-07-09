@@ -16,14 +16,14 @@ struct ZurichNode {
 
 struct ZurichNode* getZurichTreeRoot(struct ZurichNode* tree);
 void getZurichTreePath(struct ZurichNode* tree, char* path);
-void populateTree(struct MeasurementLegacy* MeasurementLegacy, int treeControl, int flags);
+void populateTree(struct MeasurementLegacy* MeasurementLegacy, int treeControl, uint32_t flags);
 void populateTreeNode(int panel, int treeControl, struct ZurichNode* tree, int parentIndex);
 
 void freeZurichNode(struct ZurichNode* tree);
 
 void sortNodeTree(struct ZurichNode* tree);
 
-void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, int flags);
+void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, uint32_t flags);
 
 void printNodeTree(struct ZurichNode* tree, char* indent);
 

@@ -4,7 +4,8 @@
 // Necessary includes for this module
 #include "meastypes.h"
 
-void initMeasNodes();
+void initMeasNodes(void);
+void deleteMeasNodes(void);
 void raiseMeasurementPanel(Measurement* measurement);
 void createNewMeasurement(ZMeasure* zmeasure);
 

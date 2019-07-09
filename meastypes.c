@@ -125,7 +125,7 @@ Measurement* newMeasurement(ZMeasure* zmeasure)
 
 void deleteMeasurement(Measurement* measurement)
 {
-	for(int i = 0;i < measurement->nSteps;i++) {
+	for(uint32_t i = 0;i < measurement->nSteps;i++) {
 		deleteMeasStep(measurement->steps[i]);
 	}
 	
@@ -150,7 +150,7 @@ MeasStep* newMeasStep(Measurement* measurement)
 
 void deleteMeasStep(MeasStep* measStep)
 {
-	for(int i = 0;i < measStep->nVars;i++) {
+	for(uint32_t i = 0;i < measStep->nVars;i++) {
 		deleteMeasVar(measStep->vars[i]);
 	}
 	
@@ -185,7 +185,7 @@ void deleteMeasVar(MeasVar* measVar)
 // Returns -1 if not found
 int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length)
 {
-	for(int i = 0;i < length;i++) {
+	for(size_t i = 0;i < length;i++) {
 		if (zmeasure->connections[i] == zurich) {
 			return i;
 		}
@@ -217,7 +217,7 @@ int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 	}
 	
 	// Shift following elements forward
-	for(int i = index+1;i < zmeasure->connCount;i++) {
+	for(size_t i = index+1;i < zmeasure->connCount;i++) {
 		zmeasure->connections[i-1] = zmeasure->connections[i];
 	}
 	

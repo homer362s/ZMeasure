@@ -1,3 +1,4 @@
+#include "measurement.h"
 #include "ZMeasure.h"
 
 // Contains functions relating to physically taking a measurement
@@ -61,12 +62,19 @@ void initMeasNodes()
 	}
 }
 
+// Frees the measNodes global struct
+void deleteMeasNodes()
+{
+	deleteTree(measNodes, free);
+	measNodes = 0;
+}
+
 
 // Get index of the specified name as a direct child of the tree node
 // Returns -1 if its not found
 static int getChildNodeIndex(TreeNode* tree, char* name)
 {
-	for (int i = 0;i < tree->nChildren;i++) {
+	for (size_t i = 0;i < tree->nChildren;i++) {
 		if (strcmp(tree->children[i]->data, name) == 0) {
 			return i;
 		}
@@ -113,6 +121,7 @@ static void addPathToTree(TreeNode* tree, char* path)
 }
 
 
+// TODO: Implement this
 static void removePathFromTree(TreeNode* tree, char* path)
 {
 	
@@ -192,7 +201,7 @@ static void populateTreeNode(int panel, int treeControl, struct TreeNode* tree, 
 	printf("%s\n", (char*)tree->data);
 	SetTreeItemAttribute(panel, treeControl, index, ATTR_CTRL_VAL, (int)tree); 
 	SetTreeItemAttribute(panel, treeControl, index, ATTR_COLLAPSED, 1);
-	for(int i = 0;i < tree->nChildren;i++) {
+	for(size_t i = 0;i < tree->nChildren;i++) {
 		populateTreeNode(panel, treeControl, tree->children[i], index);
 	}
 }
@@ -202,7 +211,7 @@ static void populateTree(int panel, int treeControl, struct TreeNode* tree)
 	int rootIndex = InsertTreeItem(panel, treeControl, VAL_SIBLING, 0, VAL_LAST, tree->data, NULL, 0, 0);
 	// Store the tree pointer as an int because void* isn't a valid type for a cvi tree   
 	SetTreeItemAttribute(panel, treeControl, rootIndex, ATTR_CTRL_VAL, (int)tree);		
-	for(int i = 0;i < tree->nChildren;i++) {
+	for(size_t i = 0;i < tree->nChildren;i++) {
 		populateTreeNode(panel, treeControl, tree->children[i], rootIndex);
 	}
 }

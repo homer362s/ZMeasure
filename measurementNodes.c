@@ -6,7 +6,7 @@
 
 void addMeasurementLegacyNode(struct MeasurementLegacyNodes* nodes, char* path)
 {
-	int len = strlen(path);
+	size_t len = strlen(path);
 	nodes->count = nodes->count + 1;
 	
 	// Grow the array of paths

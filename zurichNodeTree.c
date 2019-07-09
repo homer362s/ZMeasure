@@ -24,7 +24,7 @@ void printNodeTree(struct ZurichNode* tree, char* indent)
 // ZurichData* zurich -> pointer to the zurich data/connection struct
 // ZurichNode* tree -> all the children will be filled in for this node 
 // int flags -> flags passed directly through to ziAPIListNodes
-void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, int flags)
+void getNodeTreeFromDevice(struct ZurichData* zurich, struct ZurichNode* tree, uint32_t flags)
 {
 	char* nodestr = malloc(ZURICH_NODESTR_MAXLEN * sizeof(char));
 	
@@ -132,7 +132,7 @@ void populateTreeNode(int panel, int treeControl, struct ZurichNode* tree, int p
 	}
 }
 
-void populateTree(struct MeasurementLegacy* MeasurementLegacy, int treeControl, int flags)
+void populateTree(struct MeasurementLegacy* MeasurementLegacy, int treeControl, uint32_t flags)
 {
 	int zindex = MeasurementLegacy->connectionCount - 1;
 	struct ZurichData* zurich = MeasurementLegacy->zurich[zindex];
@@ -178,16 +178,5 @@ void getZurichTreePath(struct ZurichNode* leaf, char* fullPath)
 	
 	// Add the root node to finish the path
 	sprintf(fullPath, "/%s/%s", node->name, partialPath);
-}
-
-
-
-void addZurichNode(struct ZurichNode* rootNode, struct ZurichNode* parent)
-{
-}
-
-
-void removeZurichNode(struct ZurichNode* targetNode)
-{
 }
 

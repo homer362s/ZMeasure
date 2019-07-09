@@ -23,11 +23,11 @@ static void enableAllZurichUIControls(int panel);
 static void disableAllZurichUIControls(int panel);
 static void setStateAllZurichUIControls(int panel, int state);
 
-void uiConnectToZurich();
+void uiConnectToZurich(ZMeasure* zmeasure);
 
 
 
-int main (int argc, char *argv[])
+int main(void)
 {
 	initMeasNodes();
 	ZMeasure* zmeasure = allocateSystemVars();
@@ -40,6 +40,8 @@ int main (int argc, char *argv[])
 
 	destroyAllPanels(zmeasure->panels);
 	deleteSystemVars(zmeasure);
+	deleteMeasNodes();
+	Delay(5);
 	
 	return 0;
 }
@@ -212,22 +214,22 @@ static ZurichConn* uiGetActiveZurichConn(ZMeasure* zmeasure)
 		return 0;
 	}
 	
-	int fake;
-	GetCtrlVal(zmeasure->panels->main, MAINP_CONNECTIONS, &fake);
+	ZurichConn* zurich;
+	GetCtrlVal(zmeasure->panels->main, MAINP_CONNECTIONS, (int*)(&zurich));
 	
-	return (ZurichConn*)fake;
+	return zurich;
 }
 
 int setZIValueAdvD(ZurichConn* zurich, int panel, int control, int handleArray, char* fmtpath)
 {
 	int index;
-	int arrayHandle = GetCtrlArrayFromResourceID(panel, FREQ);
+	int arrayHandle = GetCtrlArrayFromResourceID(panel, handleArray);
 	GetCtrlArrayIndex(arrayHandle, panel, control, &index);
 	if (index != -1) {
 		char strvalue[32];
 		double value;
 		char path[MAX_PATH_LEN];
-		sprintf(path, "/%s/oscs/%d/freq", zurich->connDef->device, index);
+		sprintf(path, fmtpath, zurich->connDef->device, index);
 		GetCtrlVal(panel, control, strvalue);
 		int retval = readNumberScientific(strvalue, &value);
 		if (retval == 0) {
@@ -450,16 +452,14 @@ void CVICALLBACK exit_CB (int menuBar, int menuItem, void *callbackData,int pane
 
 int CVICALLBACK setZIValue_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
-	ZMeasure* zmeasure;
-	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
-	int fakeptr;
-	switch (event)
+	if (event == EVENT_COMMIT)
 	{
-		case EVENT_COMMIT:
-			GetCtrlVal(panel, MAINP_CONNECTIONS, &fakeptr);
-			setZIValue((ZurichConn*)fakeptr, panel, control);
-			break;
-	}
+		ZMeasure* zmeasure;
+		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
+		ZurichConn* zurich;
+		GetCtrlVal(panel, MAINP_CONNECTIONS, (int*)(&zurich));
+		setZIValue(zurich, panel, control);
+}
 	return 0;
 }
 
@@ -505,9 +505,8 @@ int CVICALLBACK editMeasurement_CB (int panel, int control, int event, void *cal
 				case LEFT_DOUBLE_CLICK:
 				case ENTER_KEY:
 					int index = eventData2;
-					int fakeptr;
-					GetTreeItemAttribute(panel, MAINP_MEASUREMENTS, index, ATTR_CTRL_VAL, &fakeptr);
-					Measurement* measurement = (Measurement*)fakeptr;
+					Measurement* measurement;
+					GetTreeItemAttribute(panel, MAINP_MEASUREMENTS, index, ATTR_CTRL_VAL, (int*)&measurement);
 					raiseMeasurementPanel(measurement);
 			}
 			// Figure out which measurement this is
@@ -576,9 +575,8 @@ int CVICALLBACK activeZurichChange_CB (int panel, int control, int event, void *
 		ZMeasure* zmeasure;
 		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &zmeasure);
 		
-		int fake;
-		GetCtrlVal(panel, MAINP_CONNECTIONS, &fake);
-		ZurichConn* zurich = (ZurichConn*)fake;
+		ZurichConn* zurich;
+		GetCtrlVal(panel, MAINP_CONNECTIONS, (int*)(&zurich));
 		
 		uiSelectActiveZurich(zmeasure, zurich);
 	}

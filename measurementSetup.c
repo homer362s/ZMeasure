@@ -45,12 +45,12 @@ void deleteSystemVars(ZMeasure* zmeasure)
 	free(zmeasure->activeConn);
 	
 	// Delete each measurement
-	for(int i = 0;i < zmeasure->measurementCount;i++) {
+	for(size_t i = 0;i < zmeasure->measurementCount;i++) {
 		deleteMeasurement(zmeasure->measurements[i]);
 	}
 	
 	// Delete each connection
-	for(int i = 0;i < zmeasure->connCount;i++) {
+	for(size_t i = 0;i < zmeasure->connCount;i++) {
 		deleteZurichConn(zmeasure->connections[i]);
 	}
 	
@@ -211,9 +211,8 @@ int CVICALLBACK updateZurichUIControls(int reserved, int timerId, int event, voi
 void autophase(int panel, int control)
 {
 	// Get UI selected connection (we can't use zmeasure->activeConn since its in a different thread)
-	int fakeptr;
-	GetCtrlVal(panel, MAINP_CONNECTIONS, &fakeptr);
-	ZurichConn* zurich = (ZurichConn*)fakeptr;
+	ZurichConn* zurich;
+	GetCtrlVal(panel, MAINP_CONNECTIONS, (int*)(&zurich));
 	
 	char path[MAX_PATH_LEN];
 	int index;
@@ -234,14 +233,14 @@ int readNumberScientific(char* instr, double* value)
 	
 	// Get a new string to work with;
 	char* str = malloc((len+1) * sizeof(char));
-	for(int i = 0;i < len+1;i++) {
+	for(uint8_t i = 0;i < len+1;i++) {
 		str[i] = 0;
 	}
 	
 	// Remove all spaces
 	char c;
 	int index = 0;
-	for(int i = 0;i < len+1;i++) {
+	for(uint8_t i = 0;i < len+1;i++) {
 		c = instr[i];
 		if (c != ' ') {
 			str[index] = c;
@@ -270,7 +269,7 @@ int readNumberScientific(char* instr, double* value)
 	
 	// Find end of numeric portion:
 	size_t endIndex = len;
-	for(int i = startIndex;i < len;i++) {
+	for(size_t i = startIndex;i < len;i++) {
 		c = str[i];
 		if ((c >= '0' && c <= '9') || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+') {
 			endIndex = i;
@@ -279,7 +278,7 @@ int readNumberScientific(char* instr, double* value)
 	endIndex += 1;
 	
 	// Determine if we are done
-	int multiplier = 1;	
+	double multiplier = 1;	
 	if (endIndex < len) {
 		// Determine multiplier
 		c = str[endIndex];

@@ -29,14 +29,14 @@ StringList splitString(char* str, char delim)
 	// The number of strings is one more than this count
 	size_t nStrs = 1;
 	
-	int i = 0;
+	int j = 0;
 	char c;
-	while ((c = str[i])) {
+	while ((c = str[j])) {
 		if (c == delim) {
 			nStrs += 1;
 		}
 	
-		i++;
+		j++;
 	}
 	
 	// We need an array to hold one more element than nStrs (for the null terminator)
@@ -49,7 +49,7 @@ StringList splitString(char* str, char delim)
 	size_t len;
 	
 	// Copy each substring into newly malloced strings
-	for(int i = 0;i < nStrs;i++) {
+	for(size_t i = 0;i < nStrs;i++) {
 		strend = strchr(strstart, delim);
 		
 		if (strend) {
