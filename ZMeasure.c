@@ -29,7 +29,6 @@ void uiConnectToZurich(ZMeasure* zmeasure);
 
 int main(void)
 {
-	initMeasNodes();
 	ZMeasure* zmeasure = allocateSystemVars();
 	initializePanels(zmeasure);
 	
@@ -40,8 +39,6 @@ int main(void)
 
 	destroyAllPanels(zmeasure->panels);
 	deleteSystemVars(zmeasure);
-	deleteMeasNodes();
-	Delay(5);
 	
 	return 0;
 }

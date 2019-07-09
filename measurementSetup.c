@@ -35,6 +35,8 @@ ZMeasure* allocateSystemVars()
 		zmeasure->measurements[i] = 0;
 	}
 	zmeasure->measurementCount = 0;
+	
+	initMeasNodes();
 
 	return zmeasure;
 }
@@ -57,6 +59,8 @@ void deleteSystemVars(ZMeasure* zmeasure)
 	// Delete remaining variables
 	free(zmeasure->panels);
 	free(zmeasure);
+	
+	deleteMeasNodes();
 }
 
 // This function is more complicated than I think it should need to be.
