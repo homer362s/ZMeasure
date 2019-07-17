@@ -33,6 +33,21 @@
 #define  OUTVARSP_CANCEL                  3       /* control type: command, callback function: finishSelectingNodes_CB */
 #define  OUTVARSP_ADD                     4       /* control type: command, callback function: finishSelectingNodes_CB */
 
+#define  PANEL                            3
+#define  PANEL_VARS                       2       /* control type: listBox, callback function: (none) */
+#define  PANEL_NUMERIC_3                  3       /* control type: numeric, callback function: (none) */
+#define  PANEL_NUMERIC_2                  4       /* control type: numeric, callback function: (none) */
+#define  PANEL_NUMERIC_4                  5       /* control type: numeric, callback function: (none) */
+#define  PANEL_NUMERIC_5                  6       /* control type: numeric, callback function: (none) */
+#define  PANEL_NUMERIC                    7       /* control type: numeric, callback function: (none) */
+#define  PANEL_STRING                     8       /* control type: string, callback function: (none) */
+#define  PANEL_STRING_2                   9       /* control type: string, callback function: (none) */
+#define  PANEL_COMMANDBUTTON              10      /* control type: command, callback function: (none) */
+#define  PANEL_STRING_3                   11      /* control type: string, callback function: (none) */
+#define  PANEL_COMMANDBUTTON_3            12      /* control type: command, callback function: (none) */
+#define  PANEL_COMMANDBUTTON_2            13      /* control type: command, callback function: (none) */
+#define  PANEL_DECORATION                 14      /* control type: deco, callback function: (none) */
+
 
      /* Control Arrays: */
 

@@ -281,9 +281,6 @@ void raiseMeasurementPanel(Measurement* measurement)
 		SetPanelAttribute(measurement->panel, ATTR_CALLBACK_DATA, measurement);
 	}
 	
-	// Load into the panel all the measurement settings
-	// TODO: implement loading measurement settings
-	
 	// Display the panel
 	DisplayPanel(measurement->panel);
 	
@@ -362,8 +359,6 @@ void renameMeasurement(Measurement* measurement, char* newname)
 	measurement->name = namecpy;
 	
 	// Update the values throughout the UI
-	SetPanelAttribute(measurement->panel, ATTR_TITLE, namecpy);
-	
 	int index;
 	GetIndexFromValue(zmeasure->panels->main, MAINP_MEASUREMENTS, &index, (int)measurement);
 	SetTreeItemAttribute(zmeasure->panels->main, MAINP_MEASUREMENTS, index, ATTR_LABEL_TEXT, newname);
@@ -381,10 +376,6 @@ int CVICALLBACK measpanel_CB (int panel, int event, void *callbackData, int even
 				
 				// Hide the panel
 				HidePanel(measurement->panel);
-				
-				// Discard the panel
-				//DiscardPanel(measurement->panel);
-				//measurement->panel = 0;
 	}
 	return 0;
 }
