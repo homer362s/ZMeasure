@@ -120,6 +120,11 @@ Measurement* newMeasurement(ZMeasure* zmeasure)
 	measurement->measTree->data = malloc(1 * sizeof(char));
 	strcpy(measurement->measTree->data, "");
 	
+	char* defaultName = "Untitled";
+	int length = strlen(defaultName);
+	measurement->name = malloc((length+1) * sizeof(char));
+	strcpy(measurement->name, defaultName);
+	
 	return measurement;
 }
 
@@ -132,6 +137,8 @@ void deleteMeasurement(Measurement* measurement)
 	CmtDiscardLock(measurement->threadLock);
 	
 	deleteTree(measurement->measTree, free);
+	
+	free(measurement->name);
 	
 	free(measurement);
 }
@@ -185,9 +192,9 @@ void deleteMeasVar(MeasVar* measVar)
 
 // Get the index of a ZurichConn in a ZMeasure struct
 // Returns -1 if not found
-size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length)
+size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich)
 {
-	for(size_t i = 0;i < length;i++) {
+	for(size_t i = 0;i < zmeasure->connCount;i++) {
 		if (zmeasure->connections[i] == zurich) {
 			return i;
 		}
@@ -211,9 +218,10 @@ int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 
 // Removes a ZurichConn from the ZMeasure
 // Returns 0 on success, 1 on failure (ZurichConn not found)
+// This function does not free any memory
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 {
-	size_t index = getZurichConnIndex(zmeasure, zurich, zmeasure->connCount);
+	size_t index = getZurichConnIndex(zmeasure, zurich);
 	if (index == -1) {
 		return 1;
 	}
@@ -232,3 +240,54 @@ int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 	return 0;
 }
 
+// Get the index of a Measurement in a ZMeasure struct
+// Returns -1 if not found
+size_t getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
+{
+	for(size_t i = 0;i < zmeasure->measurementCount;i++) {
+		if (zmeasure->measurements[i] == measurement) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+// Adds a Weasurement to the ZMeasure
+// Returns 0 on success, 1 on failure (at connection limit)
+int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement)
+{
+	if (zmeasure->measurementCount >= MAX_MEASUREMENTS) {
+		return 1;
+	}
+	
+	zmeasure->measurements[zmeasure->measurementCount] = measurement;
+	zmeasure->measurementCount += 1;
+	
+	return 0;	
+}
+
+
+// Removes a Measurement from the ZMeasure
+// Returns 0 on success, 1 on failure (Measurement not found)
+// This function does not free any memory
+int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement)
+{
+	size_t index = getMeasurementIndex(zmeasure, measurement);
+	if (index == -1) {
+		return 1;
+	}
+	
+	// Shift following elements forward
+	for(size_t i = index+1;i < zmeasure->measurementCount;i++) {
+		zmeasure->measurements[i-1] = zmeasure->measurements[i];
+	}
+	
+	// Set end item to zero
+	zmeasure->measurements[zmeasure->measurementCount-1] = 0;
+	
+	// Update connection count
+	zmeasure->measurementCount -= 1;
+	
+	return 0;
+}

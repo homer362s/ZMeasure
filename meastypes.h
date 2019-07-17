@@ -86,6 +86,7 @@ enum MeasAction {MEAS_ACTION_NONE, MEAS_ACTION_STOP, MEAS_ACTION_PAUSE, MEAS_ACT
 // Each step is made up of zero or more Measurement variables
 // (zero for repeated Measurements for averaging)
 struct Measurement {
+	char* name;							// Name of the measurement
 	uint32_t nSteps;					// Number of Measurement steps
 	MeasStep* steps[MAX_MEAS_STEPS];	// Array of each Measurement step
 	ZMeasure* zmeasure;					// Parent program
@@ -152,8 +153,11 @@ MeasVar* newMeasVar(MeasStep* measStep);
 void deleteMeasVar(MeasVar* measVar);
 
 // Utility
-size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length);
+size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich);
 int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
+size_t getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement);
+int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement);
+int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement);
 
 #endif  /* ndef __meastypes_H__ */

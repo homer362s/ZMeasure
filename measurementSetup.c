@@ -383,9 +383,12 @@ int CVICALLBACK manageMeasurements_CB (int panel, int control, int event, void *
 		case EVENT_COMMIT:
 			switch (control) {
 				case MAINP_NEWMEAS:
-					createNewMeasurement(zmeasure);
+					createMeasurementInUI(zmeasure);
 					break;
 				case MAINP_DELETEMEAS:
+					Measurement* measurement;
+					GetCtrlVal(panel, MAINP_MEASUREMENTS, &measurement);
+					deleteMeasurementFromUI(measurement);
 					break;
 			}
 			break;

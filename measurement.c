@@ -76,7 +76,7 @@ static int getChildNodeIndex(TreeNode* tree, char* name)
 {
 	for (size_t i = 0;i < tree->nChildren;i++) {
 		if (strcmp(tree->children[i]->data, name) == 0) {
-			return i;
+			return (int)i;
 		}
 	}
 	
@@ -284,7 +284,8 @@ void raiseMeasurementPanel(Measurement* measurement)
 	CmtReleaseLock(measurement->threadLock);
 }
 
-void createNewMeasurement(ZMeasure* zmeasure)
+// High level function to create a new measurement in the program
+void createMeasurementInUI(ZMeasure* zmeasure)
 {
 	// Verify we have enough space, do nothing if we don't
 	if (zmeasure->measurementCount >= MAX_MEASUREMENTS) {
@@ -306,11 +307,61 @@ void createNewMeasurement(ZMeasure* zmeasure)
 	// Update main window tree. Store Measurement* measurement as an int since void* isn't an option
 	InsertTreeItem(zmeasure->panels->main, MAINP_MEASUREMENTS, VAL_SIBLING, 0, VAL_LAST, "Untitled Measurement", NULL, NULL, (int)measurement);
 	
+	// Enable delete button
+	SetCtrlAttribute(zmeasure->panels->main, MAINP_DELETEMEAS, ATTR_DIMMED, 0);
+	
 	// Display the panel
 	raiseMeasurementPanel(measurement);
 }
 
+// High level function to discard a measurement definition from the program
+void deleteMeasurementFromUI(Measurement* measurement) 
+{
+	ZMeasure* zmeasure = measurement->zmeasure;
+	int mainp = zmeasure->panels->main;
+	
+	// Remove from the tree
+	int index;
+	GetIndexFromValue(mainp, MAINP_MEASUREMENTS, &index, (int)measurement);
+	DeleteListItem(mainp, MAINP_MEASUREMENTS, index, 1);
+	
+	// Fremove from ZMeasure struct
+	removeMeasurementFromZMeasure(zmeasure, measurement);
+	
+	// Close its panel(s)
+	DiscardPanel(measurement->panel);
+	
+	// Free the memory
+	deleteMeasurement(measurement);
+	
+	// If the tree is empty, disable the delete button
+	int count;
+	GetNumListItems(mainp, MAINP_MEASUREMENTS, &count);
+	if (count == 0) {
+		SetCtrlAttribute(mainp, MAINP_DELETEMEAS, ATTR_DIMMED, 1);
+	}
+}
 
+
+// High level function to rename a measurement in the UI
+void renameMeasurement(Measurement* measurement, char* newname)
+{
+	// Store the updated value
+	ZMeasure* zmeasure = measurement->zmeasure;
+	int length = strlen(newname);
+	char* namecpy = malloc((length + 1) * sizeof(char));
+	strcpy(namecpy, newname);
+	free(measurement->name);
+	measurement->name = namecpy;
+	
+	// Update the values throughout the UI
+	SetPanelAttribute(measurement->panel, ATTR_TITLE, namecpy);
+	
+	int index;
+	GetIndexFromValue(zmeasure->panels->main, MAINP_MEASUREMENTS, &index, (int)measurement);
+	SetTreeItemAttribute(zmeasure->panels->main, MAINP_MEASUREMENTS, index, ATTR_LABEL_TEXT, newname);
+	
+}
 
 
 /***** Callback Functions *****/
@@ -320,8 +371,13 @@ int CVICALLBACK measpanel_CB (int panel, int event, void *callbackData, int even
 		switch(eventData1) {
 			case VAL_ESC_VKEY:
 				Measurement* measurement = callbackData;
-				DiscardPanel(measurement->panel);
-				measurement->panel = 0;
+				
+				// Hide the panel
+				HidePanel(measurement->panel);
+				
+				// Discard the panel
+				//DiscardPanel(measurement->panel);
+				//measurement->panel = 0;
 	}
 	return 0;
 }
@@ -395,3 +451,22 @@ int CVICALLBACK finishSelectingNodes_CB (int panel, int control, int event, void
 	return 0;
 }
 
+int CVICALLBACK renameMeas_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_COMMIT)
+	{
+		Measurement* measurement;
+		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
+		
+		int length;
+		GetCtrlAttribute(panel, MEASP_NAME, ATTR_STRING_TEXT_LENGTH, &length);
+		
+		char* newname = malloc((length+1) * sizeof(char));
+		GetCtrlVal(panel, MEASP_NAME, newname);
+		
+		renameMeasurement(measurement, newname);
+		
+		free(newname);
+	}
+	return 0;
+}

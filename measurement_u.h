@@ -17,7 +17,7 @@
 #define  MEASP_OUTVARTREE                 2       /* control type: tree, callback function: (none) */
 #define  MEASP_STEPTREE                   3       /* control type: tree, callback function: (none) */
 #define  MEASP_FULLNODETREE               4       /* control type: tree, callback function: (none) */
-#define  MEASP_NAME                       5       /* control type: string, callback function: (none) */
+#define  MEASP_NAME                       5       /* control type: string, callback function: renameMeas_CB */
 #define  MEASP_STOP                       6       /* control type: command, callback function: startstop_CB */
 #define  MEASP_PAUSE                      7       /* control type: command, callback function: startstop_CB */
 #define  MEASP_START                      8       /* control type: command, callback function: startstop_CB */
@@ -25,8 +25,8 @@
 #define  MEASP_TEXTMSG                    10      /* control type: textMsg, callback function: (none) */
 #define  MEASP_ADDVAR                     11      /* control type: command, callback function: addPath_CB */
 #define  MEASP_DELETEVAR                  12      /* control type: command, callback function: (none) */
-#define  MEASP_ADDSTEP                    13      /* control type: command, callback function: (none) */
-#define  MEASP_DELETESTEP                 14      /* control type: command, callback function: (none) */
+#define  MEASP_DELETESTEP                 13      /* control type: command, callback function: (none) */
+#define  MEASP_ADDSTEP                    14      /* control type: command, callback function: (none) */
 
 #define  OUTVARSP                         2       /* callback function: varspanel_CB */
 #define  OUTVARSP_TREE                    2       /* control type: tree, callback function: (none) */
@@ -48,6 +48,7 @@
 int  CVICALLBACK addPath_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK finishSelectingNodes_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK measpanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
+int  CVICALLBACK renameMeas_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK startstop_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK varspanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 

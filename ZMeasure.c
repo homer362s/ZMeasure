@@ -14,7 +14,6 @@
 
 
 // Function prototypes
-void deleteMeasurementLegacy(struct MeasurementLegacy* MeasurementLegacy);
 void initializePanels(ZMeasure* zmeasure);
 void destroyAllPanels(PrimaryPanels* panels);
 static ZurichConn* uiGetActiveZurichConn(ZMeasure* zmeasure);

@@ -7,6 +7,7 @@
 void initMeasNodes(void);
 void deleteMeasNodes(void);
 void raiseMeasurementPanel(Measurement* measurement);
-void createNewMeasurement(ZMeasure* zmeasure);
+void createMeasurementInUI(ZMeasure* zmeasure);
+void deleteMeasurementFromUI(Measurement* measurement);
 
 #endif  /* ndef __MeasurementLegacy_H__ */
