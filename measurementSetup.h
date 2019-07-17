@@ -9,7 +9,7 @@ void disconnectFromZurich(struct MeasurementLegacy* MeasurementLegacy, struct Zu
 struct ZurichData* newZurichConnection(struct MeasurementLegacy* MeasurementLegacy);
 void deleteZurichConnection(struct MeasurementLegacy* MeasurementLegacy, int index);
 
-ZMeasure* allocateSystemVars();
+ZMeasure* allocateSystemVars(void);
 void deleteSystemVars(ZMeasure* zmeasure);
 ZurichConnDef* newZurichConnDef(char* address, uint16_t port, char* device);
 void deleteZurichConnDef(ZurichConnDef* connDef);

@@ -286,8 +286,16 @@ void raiseMeasurementPanel(Measurement* measurement)
 
 void createNewMeasurement(ZMeasure* zmeasure)
 {
+	// Verify we have enough space, do nothing if we don't
+	if (zmeasure->measurementCount >= MAX_MEASUREMENTS) {
+		MessagePopup("Too Many Measurements", "Can't create new measurement. Too many measurements already defined.");
+		return;
+	}
+	
 	// Create Measurement struct
 	Measurement* measurement = newMeasurement(zmeasure);
+	zmeasure->measurements[zmeasure->measurementCount] = measurement;
+	zmeasure->measurementCount += 1;
 	
 	// Create a new measurement settings panel
 	measurement->panel = LoadPanel(zmeasure->panels->main, "measurement_u.uir", MEASP);

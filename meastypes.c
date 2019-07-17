@@ -131,6 +131,8 @@ void deleteMeasurement(Measurement* measurement)
 	
 	CmtDiscardLock(measurement->threadLock);
 	
+	deleteTree(measurement->measTree, free);
+	
 	free(measurement);
 }
 
@@ -183,7 +185,7 @@ void deleteMeasVar(MeasVar* measVar)
 
 // Get the index of a ZurichConn in a ZMeasure struct
 // Returns -1 if not found
-int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length)
+size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length)
 {
 	for(size_t i = 0;i < length;i++) {
 		if (zmeasure->connections[i] == zurich) {

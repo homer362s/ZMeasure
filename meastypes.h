@@ -9,12 +9,12 @@
 #include "fixedziAPI.h"
 #include "tree.h"
 
-#define MAX_DEV_NAME_LENGTH 8
-#define MAX_DEVICE_CONNECTIONS 16
-#define MAX_MEASUREMENTS 64
+#define MAX_DEV_NAME_LENGTH 8		// Maximum zurich device name length -> dev8062 == 8
+#define MAX_DEVICE_CONNECTIONS 16	// Maximum number of simultaneous zurich device connections in the main UI (internally we create more)
+#define MAX_MEASUREMENTS 64			// Maximum number of measurement definitions the program can store(/run?) at once
 #define MAX_NODE_PATH 128
-#define MAX_MEAS_STEPS 10
-#define MAX_MEAS_VARS 10
+#define MAX_MEAS_STEPS 10			// Maximum number of measurement steps allowed in a single measurement
+#define MAX_MEAS_VARS 10			// Maximum number of variables in a measurement step
 
 /***** New types *****/
 
@@ -82,7 +82,7 @@ struct ZurichConnDef {
 enum MeasAction {MEAS_ACTION_NONE, MEAS_ACTION_STOP, MEAS_ACTION_PAUSE, MEAS_ACTION_RESUME};
 
 // A definition of a Measurement
-// A MeasurementLegacy is made up of one ore more Measurement steps
+// A Measurement is made up of one ore more Measurement steps
 // Each step is made up of zero or more Measurement variables
 // (zero for repeated Measurements for averaging)
 struct Measurement {
@@ -102,7 +102,7 @@ struct MeasStep {
 	uint32_t nPoints;				// Number of points in this Measurement step
 	uint32_t nVars;					// Number of measurement variables at this step
 	MeasVar* vars[MAX_MEAS_VARS];	// Array of variables to modify at this Measurement step
-	float delay;					// Time delay, in seconds,between each Measurement at this step
+	float delay;					// Time delay, in seconds, between each measurement point at this step
 	Measurement* parent;			// Parent measurement
 };
 
@@ -182,7 +182,7 @@ MeasVar* newMeasVar(MeasStep* measStep);
 void deleteMeasVar(MeasVar* measVar);
 
 // Utility
-int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length);
+size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich, size_t length);
 int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 
