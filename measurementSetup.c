@@ -342,36 +342,6 @@ void formatNumberScientific(char* str, double value)
 	}
 }
 
-void displayNodeData(int panel, struct MeasurementLegacy* MeasurementLegacy)
-{
-	//int treeIndex;
-	//char path[128];
-	//int fakenode = 0;
-	
-	//GetActiveTreeItem(panel, ZNODESP_SETTINGTREE, &treeIndex);
-	//GetTreeItemAttribute(panel, ZNODESP_SETTINGTREE, treeIndex, ATTR_CTRL_VAL, &fakenode);
-	
-	//struct ZurichNode* node = (struct ZurichNode*) fakenode;
-	//getZurichTreePath(node, path);
-	
-	//printf("%s\n", path);
-}
-
-int CVICALLBACK nodeTree_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
-{
-	struct MeasurementLegacy* MeasurementLegacy;
-	
-	
-	switch (event)
-	{
-		case EVENT_COMMIT:
-			GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &MeasurementLegacy);
-			displayNodeData(panel, MeasurementLegacy);
-			break;
-	}
-	return 0;
-}
-
 
 int CVICALLBACK manageMeasurements_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {

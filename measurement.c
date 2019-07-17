@@ -29,7 +29,7 @@ static void removePathFromTree(TreeNode* tree, char* path);
 int CVICALLBACK measurementThread (void* measurement);
 
 /***** Functions to work with zurich nodes *****/
-static TreeNode* measNodes;
+static const TreeNode* measNodes;
 
 // Initialize the list of supported measurement nodes
 void initMeasNodes()
@@ -198,7 +198,6 @@ static void setUIState(int panel, int state)
 static void populateTreeNode(int panel, int treeControl, struct TreeNode* tree, int parentIndex)
 {
 	int index = InsertTreeItem(panel, treeControl, VAL_CHILD, parentIndex, VAL_LAST, tree->data, NULL, 0, 0);
-	printf("%s\n", (char*)tree->data);
 	SetTreeItemAttribute(panel, treeControl, index, ATTR_CTRL_VAL, (int)tree); 
 	SetTreeItemAttribute(panel, treeControl, index, ATTR_COLLAPSED, 1);
 	for(size_t i = 0;i < tree->nChildren;i++) {
@@ -208,12 +207,20 @@ static void populateTreeNode(int panel, int treeControl, struct TreeNode* tree, 
 
 static void populateTree(int panel, int treeControl, struct TreeNode* tree)
 {
-	int rootIndex = InsertTreeItem(panel, treeControl, VAL_SIBLING, 0, VAL_LAST, tree->data, NULL, 0, 0);
-	// Store the tree pointer as an int because void* isn't a valid type for a cvi tree   
-	SetTreeItemAttribute(panel, treeControl, rootIndex, ATTR_CTRL_VAL, (int)tree);		
-	for(size_t i = 0;i < tree->nChildren;i++) {
-		populateTreeNode(panel, treeControl, tree->children[i], rootIndex);
+	// Insert each device as a top level item
+	for(int i = 0;i < tree->nChildren;i++) {
+		TreeNode* treeRoot = tree->children[i];
+		
+		int rootIndex = InsertTreeItem(panel, treeControl, VAL_SIBLING, 0, VAL_LAST, treeRoot->data, NULL, 0, 0);  
+		
+		// Store the tree pointer as an int because void* isn't a valid type for a cvi tree   
+		SetTreeItemAttribute(panel, treeControl, rootIndex, ATTR_CTRL_VAL, (int)tree);		
+		for(size_t j = 0;j < treeRoot->nChildren;j++) {
+			populateTreeNode(panel, treeControl, treeRoot->children[j], rootIndex);
+		}
 	}
+	
+
 }
 
 static void outputVarPopup(Measurement* measurement)
@@ -391,6 +398,12 @@ int CVICALLBACK varspanel_CB (int panel, int event, void *callbackData, int even
 				RemovePopup(0);	// Remove active popup (this panel)
 				return 1;		// Swallow callback
 	}
+	
+	if (event == EVENT_CLOSE) {
+		RemovePopup(0);
+		return 0;
+	}
+	
 	return 0;
 }
 
