@@ -100,17 +100,6 @@ void getConnName(ZurichConnDef* connDef, char* name)
 }
 
 
-// Returns the zurich data assocated with a given node tree
-struct ZurichData* getZurichDataFromNode(struct MeasurementLegacy* MeasurementLegacy, struct ZurichNode* node)
-{
-	for(int i = 0;i < MeasurementLegacy->connectionCount;i++) {
-		if (MeasurementLegacy->zurich[i]->tree == node)
-			return MeasurementLegacy->zurich[i];
-	}
-	return 0;
-}
-
-
 void updateControlStrD(ZurichConn* zurich, int panel, int handleArray, char* fmtpath)
 {
 	char path[MAX_PATH_LEN];

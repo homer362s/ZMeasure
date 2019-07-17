@@ -136,36 +136,6 @@ struct MeasVar {
 
 
 
-
-/***** Legacy types *****/
-struct PanelHandles {
-	int main;
-	int about;
-	int zconn;
-	int znodes;
-	int sweep;
-	int output;	
-	int measvars;
-};
-
-struct ZurichData {
-	ZIResult_enum retVal;
-	ZIConnection conn;
-	ZIEvent* event;
-	char device[MAX_DEV_NAME_LENGTH];		// Device name
-	char* errBuffer;					// Holds the last error from the device
-	char* path;							// Temporary variable to hold the last path built
-	struct ZurichNode* tree;			// Node tree for all nodes on the device
-};
-
-struct MeasurementLegacy {
-	struct PanelHandles* panels;
-	int connectionCount;
-	struct ZurichData* zurich[MAX_DEVICE_CONNECTIONS];	// Array of connections to zurich devices
-	struct MeasurementLegacyNodes* measNodes;					// Paths to measure
-};
-
-
 /***** Function Prototypes *****/
 
 // Memory management

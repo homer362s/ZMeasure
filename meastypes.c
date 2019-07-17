@@ -213,7 +213,7 @@ int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 // Returns 0 on success, 1 on failure (ZurichConn not found)
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 {
-	int index = getZurichConnIndex(zmeasure, zurich, zmeasure->connCount);
+	size_t index = getZurichConnIndex(zmeasure, zurich, zmeasure->connCount);
 	if (index == -1) {
 		return 1;
 	}

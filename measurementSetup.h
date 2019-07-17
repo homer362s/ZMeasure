@@ -3,11 +3,6 @@
 
 #include "meastypes.h"
 
-void connectToZurich(struct MeasurementLegacy* MeasurementLegacy);
-void disconnectFromZurich(struct MeasurementLegacy* MeasurementLegacy, struct ZurichData* zurich);
-
-struct ZurichData* newZurichConnection(struct MeasurementLegacy* MeasurementLegacy);
-void deleteZurichConnection(struct MeasurementLegacy* MeasurementLegacy, int index);
 
 ZMeasure* allocateSystemVars(void);
 void deleteSystemVars(ZMeasure* zmeasure);
