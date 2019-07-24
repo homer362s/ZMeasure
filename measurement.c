@@ -23,7 +23,7 @@ static void addPathToTree(TreeNode* tree, char* path);
 static void removePathFromTree(TreeNode* tree, char* path);
 
 static void outVarsSelect_CB(TreeNode* nodeList, size_t count);
-static void getTreeSelectedItems(int panel, int control);
+static TreeNode* getTreeSelectedItems(int panel, int control);
 
 int CVICALLBACK measurementThread (void* measurement);
 
