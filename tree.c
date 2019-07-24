@@ -139,6 +139,56 @@ void deleteNodeFromTree(TreeNode* childTree, void delfcn(void*))
 }
 
 
+// Shallow copy of a tree
+TreeNode* copyTree(TreeNode* sourceTree)
+{
+	// If source is the null pointer, do nothing
+	if (!sourceTree) {
+		return 0;
+	}
+	
+	// Make copy
+	TreeNode* copy = newTree(sourceTree->nChildren);
+	copy->data = sourceTree->data;
+	for(size_t i = 0;i < sourceTree->nChildren;i++) {
+		copyTreeIntoTree(copy, sourceTree->children[i]);
+	}
+	
+	return copy;
+}
+
+TreeNode* copyTreeIntoTree(TreeNode* parentTree, TreeNode* sourceTree)
+{
+	if (!sourceTree) {
+		return 0;
+	}
+	
+	TreeNode* copy = copyTree(sourceTree);
+	
+	graftTree(parentTree, copy);
+	
+	return copy;
+}
+
+
+TreeNode* copyTreeFromBase(TreeNode* sourceTree)
+{
+	// Copy specified tree
+	TreeNode* copy = copyTree(sourceTree);
+	TreeNode* parent;
+	
+	// Copy all the direct ancestors
+	while(parent = copy->parent) {
+		TreeNode* newParent = newTree(1);
+		newParent->data = parent->data;
+		graftTree(newParent, copy);
+		copy = newParent;
+	}
+	
+	return copy;
+}
+
+
 // Iterate over the entire tree
 // fcn(TreeNode* node, size_t depth) is called for each node, starting with the root
 // node, then the first child, the the first grand child
@@ -190,7 +240,7 @@ static int getTreeNodeIndex(TreeNode* tree)
 	// Iterate over parent's children looking for ourself
 	for (size_t i = 0;i < parent->nChildren;i++) {
 		if (parent->children[i] == tree) {
-			return i;
+			return (int)i;
 		}
 	}
 	

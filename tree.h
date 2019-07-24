@@ -40,6 +40,17 @@ int detachNodeFromTree(TreeNode* childTree);
 // childTree -> node to delete
 void deleteNodeFromTree(TreeNode* childTree, void delfcn(void*));
 
+// Shallow copy a tree
+// Returns a pointer to the new tree
+TreeNode* copyTree(TreeNode* sourceTree);
+
+// Same as copyTree but grafts the copy into a specified node
+TreeNode* copyTreeIntoTree(TreeNode* parentTree, TreeNode* sourceTree);
+
+// Shallow copy a tree, including all nodes that lead to it
+// Does not copy siblings, or cousins, etc.
+TreeNode* copyTreeFromBase(TreeNode* sourceTree);
+
 // Iterate over the entire tree
 // fcn(void* data) is called for each node, starting with the root
 // node, then the first child, the the first grand child

@@ -13,10 +13,10 @@ Number of Projects = 1
 Active Project = 1
 Project 0001 = "ZMeasure.prj"
 Drag Bar Left = 347
-Window Top = 28
-Window Left = -1920
-Window Bottom = 680
-Window Right = -763
+Window Top = 30
+Window Left = -1067
+Window Bottom = 682
+Window Right = 90
 Maximized = True
 Maximized Children = True
 Max32 Number Of Errors = 20
@@ -54,7 +54,7 @@ Window Top = 152
 Window Left = 74
 Window Height = 349
 Window Width = 747
-Window Z-Order = 9
+Window Z-Order = 10
 
 [File 0002]
 Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.c"
@@ -63,7 +63,7 @@ Disk Date = 3646231204
 In Projects = "1,"
 Window Top = 32
 Window Left = 10
-Window Z-Order = 7
+Window Z-Order = 8
 Source Window State = "1,337,340,340,0,6,6,0,0,84,0,16,0,1,0,25,312,0,339,15,349,747,1,0,"
 
 [File 0003]
@@ -73,7 +73,7 @@ Disk Date = 3646234345
 In Projects = "1,"
 Window Top = 182
 Window Left = 90
-Window Z-Order = 8
+Window Z-Order = 9
 Source Window State = "1,343,357,357,0,3,3,0,0,84,0,240,0,5,0,25,333,0,342,1,349,747,1,15,"
 
 [File 0004]
@@ -83,108 +83,81 @@ Disk Date = 3646230292
 In Projects = "1,"
 Window Top = 242
 Window Left = 122
-Window Z-Order = 10
+Window Z-Order = 11
 Source Window State = "1,4,9,4,39,87,39,0,0,84,0,0,0,0,0,25,0,0,4,39,349,747,1,16,"
 
 [File 0005]
-Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
-File Type = "CSource"
-Disk Date = 3645543284
-In Projects = "1,"
-Window Top = 92
-Window Left = 42
-Source Window State = "1,68,68,68,12,18,18,0,0,84,0,175,0,4,0,25,4,0,136,34,349,747,1,16,"
-
-[File 0006]
-Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
-File Type = "Include"
-Disk Date = 3645542763
-In Projects = "1,"
-Window Top = 122
-Window Left = 58
-Source Window State = "1,18,18,18,80,83,83,0,0,84,0,0,0,0,0,25,10,26,18,88,349,747,1,0,"
-
-[File 0007]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement.c"
 File Type = "CSource"
-Disk Date = 3646237704
+Disk Date = 3646400878
 In Projects = "1,"
 Window Top = 92
 Window Left = 42
-Window Z-Order = 2
-Source Window State = "1,361,361,361,0,65,65,0,0,84,0,341,0,0,0,25,325,0,360,42,349,747,1,16,"
+Window Z-Order = 1
+Source Window State = "1,206,206,206,12,24,24,0,0,118,0,341,0,0,0,23,183,0,208,136,349,747,1,16,"
 
-[File 0008]
+[File 0006]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement.h"
 File Type = "Include"
-Disk Date = 3646231239
+Disk Date = 3646397633
 In Projects = "1,"
 Window Top = 122
 Window Left = 58
-Window Z-Order = 6
-Source Window State = "1,9,9,9,5,24,24,0,0,84,0,0,0,0,0,25,0,0,10,55,349,747,1,0,"
+Window Z-Order = 3
+Source Window State = "1,9,9,9,5,24,24,0,0,84,0,0,0,0,0,25,0,0,6,20,349,747,1,0,"
 
-[File 0009]
+[File 0007]
 Path = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
 File Type = "Include"
 Disk Date = 3646232418
 In Projects = "1,"
 Window Top = 152
 Window Left = 74
-Window Z-Order = 4
+Window Z-Order = 7
 Source Window State = "1,103,104,103,51,54,51,0,0,84,0,0,0,0,0,25,80,0,105,57,349,747,1,11,"
 
-[File 0010]
+[File 0008]
 Path = "/c/Users/user/Desktop/ZMeasure/meastypes.c"
 File Type = "CSource"
 Disk Date = 3646232926
 In Projects = "1,"
 Window Top = 289
 Window Left = 154
-Window Z-Order = 5
+Window Z-Order = 6
 Source Window State = "1,104,104,104,13,27,27,0,0,84,0,1,0,1,0,25,50,0,72,9,349,747,1,0,"
 
-[File 0011]
+[File 0009]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement_u.uir"
 File Type = "User Interface Resource"
-Disk Date = 3646237691
+Disk Date = 3646398279
 In Projects = "1,"
 Window Top = 212
 Window Left = 106
 Window Height = 349
 Window Width = 747
-Window Z-Order = 1
+Window Z-Order = 2
 
-[File 0012]
-Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
-File Type = "Include"
-Disk Date = 3645536805
-In Projects = "1,"
-Window Top = 212
-Window Left = 106
-Source Window State = "1,324,324,1164,23,30,47,0,0,84,0,0,0,0,0,25,2773,0,2785,0,349,747,1,0,"
-
-[File 0013]
+[File 0010]
 Path = "/c/Users/user/Desktop/ZMeasure/tree.c"
 File Type = "CSource"
-Disk Date = 3645544685
+Disk Date = 3646400356
 In Projects = "1,"
 Window Top = 289
 Window Left = 154
-Window Z-Order = 3
-Source Window State = "1,79,79,79,5,14,14,0,0,80,0,3,0,3,0,25,135,0,151,44,349,715,1,0,"
+Window Z-Order = 5
+Source Window State = "1,79,79,79,25,33,33,0,0,80,0,3,0,3,0,25,157,0,180,31,349,715,1,0,"
 
-[File 0014]
+[File 0011]
 Path = "/c/Users/user/Desktop/ZMeasure/tree.h"
 File Type = "Include"
-Disk Date = 3645542523
+Disk Date = 3646399734
 In Projects = "1,"
 Window Top = 289
 Window Left = 170
-Window Z-Order = 11
-Source Window State = "1,46,46,46,26,29,26,0,0,80,0,0,0,0,0,25,10,0,32,10,349,715,1,0,"
+Window Z-Order = 4
+Source Window State = "1,44,45,45,0,0,0,0,0,80,0,0,0,0,0,25,17,0,46,61,349,715,1,0,"
 
-[File 0015]
+[File 0012]
 Path = "/c/Users/user/Desktop/ZMeasure/str.c"
 File Type = "CSource"
 Disk Date = 3645543155
@@ -194,7 +167,7 @@ Window Left = 74
 Window Z-Order = 12
 Source Window State = "1,38,38,38,8,9,8,0,0,80,0,0,0,0,0,25,18,0,38,9,349,715,1,0,"
 
-[File 0016]
+[File 0013]
 Path = "/c/Users/user/Desktop/ZMeasure/str.h"
 File Type = "Include"
 Disk Date = 3645360949
@@ -203,6 +176,33 @@ Window Top = 122
 Window Left = 58
 Window Z-Order = 13
 Source Window State = "1,13,15,15,0,43,43,0,0,80,0,0,0,0,0,25,0,0,12,30,349,715,1,0,"
+
+[File 0014]
+Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
+File Type = "CSource"
+Disk Date = 3645543284
+In Projects = "1,"
+Window Top = 92
+Window Left = 42
+Source Window State = "1,68,68,68,12,18,18,0,0,0,0,175,0,4,0,0,4,0,136,34,349,747,1,16,"
+
+[File 0015]
+Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
+File Type = "Include"
+Disk Date = 3645536805
+In Projects = "1,"
+Window Top = 212
+Window Left = 106
+Source Window State = "1,324,324,1164,23,30,47,0,0,0,0,0,0,0,0,0,2773,0,2785,0,349,747,1,0,"
+
+[File 0016]
+Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
+File Type = "Include"
+Disk Date = 3645542763
+In Projects = "1,"
+Window Top = 122
+Window Left = 58
+Source Window State = "1,18,18,18,80,83,83,0,0,0,0,0,0,0,0,0,10,26,18,88,349,747,1,0,"
 
 [File 0017]
 Path = "/c/Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.lib"

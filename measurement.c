@@ -12,10 +12,6 @@
 #include "tree.h"
 #include "str.h"
 
-#define MEAS_STOPPED 0
-#define MEAS_RUNNING 1
-#define MEAS_PAUSED 2
-
 /***** Private function prototypes *****/
 static void setUIState(int panel, int state);
 static void startMeasurement(Measurement* measurement);
@@ -25,6 +21,9 @@ static void stopMeasurement(Measurement* measurement);
 static int getChildNodeIndex(TreeNode* tree, char* name);
 static void addPathToTree(TreeNode* tree, char* path);
 static void removePathFromTree(TreeNode* tree, char* path);
+
+static void outVarsSelect_CB(TreeNode* nodeList, size_t count);
+static void getTreeSelectedItems(int panel, int control);
 
 int CVICALLBACK measurementThread (void* measurement);
 
@@ -205,10 +204,11 @@ static void populateTreeNode(int panel, int treeControl, struct TreeNode* tree, 
 	}
 }
 
+// Fill up a UI tree from the passed TreeNode tree
 static void populateTree(int panel, int treeControl, struct TreeNode* tree)
 {
 	// Insert each device as a top level item
-	for(int i = 0;i < tree->nChildren;i++) {
+	for(size_t i = 0;i < tree->nChildren;i++) {
 		TreeNode* treeRoot = tree->children[i];
 		
 		int rootIndex = InsertTreeItem(panel, treeControl, VAL_SIBLING, 0, VAL_LAST, treeRoot->data, NULL, 0, 0);  
@@ -221,19 +221,6 @@ static void populateTree(int panel, int treeControl, struct TreeNode* tree)
 	}
 	
 
-}
-
-static void outputVarPopup(Measurement* measurement)
-{
-	// Load variable selection panel
-	int outVarsP = LoadPanel(measurement->panel, "measurement_u.uir", OUTVARSP);
-	SetPanelAttribute(measurement->panel, ATTR_CALLBACK_DATA, measurement);
-	
-	// Fill in the tree with the measurable variables
-	populateTree(outVarsP, OUTVARSP_TREE, measNodes);
-	
-	// Create modal dialog
-	InstallPopup(outVarsP);
 }
 
 
@@ -352,7 +339,7 @@ void renameMeasurement(Measurement* measurement, char* newname)
 {
 	// Store the updated value
 	ZMeasure* zmeasure = measurement->zmeasure;
-	int length = strlen(newname);
+	size_t length = strlen(newname);
 	char* namecpy = malloc((length + 1) * sizeof(char));
 	strcpy(namecpy, newname);
 	free(measurement->name);
@@ -363,6 +350,65 @@ void renameMeasurement(Measurement* measurement, char* newname)
 	GetIndexFromValue(zmeasure->panels->main, MAINP_MEASUREMENTS, &index, (int)measurement);
 	SetTreeItemAttribute(zmeasure->panels->main, MAINP_MEASUREMENTS, index, ATTR_LABEL_TEXT, newname);
 	
+}
+
+
+/***** Tree selection panel functions *****/
+// Open a modal dialog prompting the user to select one or more items from a tree
+// parentPanel -> Parent panel to the modal dialog
+// tree -> Tree to display
+// callback -> Function that will be called when the user selects "okay"
+// multiselect -> True to allow user to select more than one item
+// leavesOnly -> True to only allow user to select leaves from the tree (nodes without any children)
+//
+// The callback will not be called if the user cancels the dialog. The callback
+// will be sent an array of nodes and a length of this array. The user is
+// responsible to free the array when it is no longer needed. 
+int treeSelectPopup(int parentPanel, TreeNode* tree, void (*callback)(TreeNode* nodeList, size_t count), int multiselect, int leavesOnly)
+{
+	// Load variable selection panel
+	int panel = LoadPanel(parentPanel, "measurement_u.uir", TREEP);
+	SetPanelAttribute(panel, ATTR_CALLBACK_DATA, callback);
+	
+	// Fill in the tree with the measurable variables
+	populateTree(panel, TREEP_TREE, tree);
+	
+	// Create modal dialog
+	InstallPopup(panel);
+	
+	return panel;
+}
+
+
+int CVICALLBACK treepanel_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_COMMIT)
+	{
+		switch (control) {
+			case TREEP_CANCEL:
+				break;
+			case TREEP_OKAY:  // Fall through
+			case TREEP_TREE:
+				// Determine selected items
+				getTreeSelectedItems(panel, TREEP_TREE);
+				break;
+		}
+		
+		// In any case, close the panel
+		RemovePopup(0);
+	}
+	return 0;
+}
+
+static TreeNode* getTreeSelectedItems(int panel, int control)
+{
+	int error, index;
+	for (error = GetTreeItem(panel, control, VAL_ALL, 0, VAL_FIRST, VAL_NEXT_PLUS_SELF, VAL_SELECTED, &index);
+         index >= 0 && error >= 0;
+         error = GetTreeItem(panel, control, VAL_ALL, 0, index, VAL_NEXT, VAL_SELECTED, &index))
+    {
+        printf("Selected: %d\n", index);
+    }
 }
 
 
@@ -381,7 +427,7 @@ int CVICALLBACK measpanel_CB (int panel, int event, void *callbackData, int even
 }
 
 
-int CVICALLBACK varspanel_CB (int panel, int event, void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK popuppanel_CB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_KEYPRESS)
 		switch(eventData1) {
@@ -419,41 +465,27 @@ int CVICALLBACK startstop_CB (int panel, int control, int event, void *callbackD
 	return 0;
 }
 
-int CVICALLBACK addPath_CB (int panel, int control, int event,
-							void *callbackData, int eventData1, int eventData2)
-{
-	switch (event)
-	{
-		case EVENT_COMMIT:
-			Measurement* measurement;
-			GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement); 
-			
-			outputVarPopup(measurement);
-			break;
-	}
-	return 0;
-}
-
-int CVICALLBACK finishSelectingNodes_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK vars_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_COMMIT)
 	{
 		switch (control) {
-			case OUTVARSP_ADD:
+			case MEASP_ADDVAR:
+				treeSelectPopup(panel, measNodes, outVarsSelect_CB, 1, 1);
 				Measurement* measurement;
-				GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
-				
-				// Iterate over each item in the tree control to determine if it is selected
-				
-				
-				break;
-			case OUTVARSP_CANCEL:
-				RemovePopup(0);	// Close the popup window
+				GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement); 
 				break;
 		}
 	}
 	return 0;
 }
+
+// Passed to treeSelectPopup to handle selecting output variable nodes
+static void outVarsSelect_CB(TreeNode* nodeList, size_t count)
+{
+	depthFirstIterTree(nodeList, 0, printStrIterFcn);
+}
+
 
 int CVICALLBACK renameMeas_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -471,6 +503,19 @@ int CVICALLBACK renameMeas_CB (int panel, int control, int event, void *callback
 		renameMeasurement(measurement, newname);
 		
 		free(newname);
+	}
+	return 0;
+}
+
+// Called for buttons to add, delete, or edit measurement steps
+int CVICALLBACK steps_CB (int panel, int control, int event,
+						  void *callbackData, int eventData1, int eventData2)
+{
+	switch (event)
+	{
+		case EVENT_COMMIT:
+
+			break;
 	}
 	return 0;
 }

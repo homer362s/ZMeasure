@@ -4,6 +4,12 @@
 // Necessary includes for this module
 #include "meastypes.h"
 
+// Defined constants
+#define MEAS_STOPPED 0
+#define MEAS_RUNNING 1
+#define MEAS_PAUSED 2
+
+// Function prototypes
 void initMeasNodes(void);
 void deleteMeasNodes(void);
 void raiseMeasurementPanel(Measurement* measurement);
