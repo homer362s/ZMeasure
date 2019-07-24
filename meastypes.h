@@ -29,8 +29,8 @@ typedef struct ZurichConn ZurichConn;
 typedef struct ZurichConnDef ZurichConnDef;
 typedef struct MeasStep MeasStep; 
 typedef struct MeasVar MeasVar; 
-typedef struct LinearSweep LinearSweep;
-typedef struct RelativeSweep RelativeSweep;
+typedef struct IndependentVariable IndependentVariable;
+typedef struct DependentVariable DependentVariable;
 
 
  // Stores everything there is to know about the entire program
@@ -98,41 +98,52 @@ struct Measurement {
 	TreeNode* measTree;					// User specified measurement nodes
 };
 
+
+// Type of sweep to generate
+// Single -> Simple sweep in one direction
+// Dual -> Sweep forward and then repeat the sweep in reverse
+// Piecewise -> Sweep along a piecewise defined set of points (Not yet implemented)
+enum SweepType{SWEEP_TYPE_SINGLE, SWEEP_TYPE_DUAL, SWEEP_TYPE_PIECEWISE};  
+
+// Type of variable
+// Independent -> Variable value is its own thing
+// Dependent -> Variable value is relative to another variable
+enum VarType{VAR_TYPE_INDEPENDENT, VAR_TYPE_DEPENDENT};
+
 // Information about a Measurement step.
 struct MeasStep {
+	char* name;						// Name of the measurement step
 	uint32_t nPoints;				// Number of points in this Measurement step
 	uint32_t nVars;					// Number of measurement variables at this step
 	MeasVar* vars[MAX_MEAS_VARS];	// Array of variables to modify at this Measurement step
 	float delay;					// Time delay, in seconds, between each measurement point at this step
 	Measurement* parent;			// Parent measurement
+	enum SweepType sweepType;		// Which type of sweep
 };
 
-
 // This variable is a regular linear sweep
-struct LinearSweep {
+struct IndependentVariable {
 	double start;		// Starting value
 	double step;		// Increment value
 };
 
 // This variable is relative to another variable
-struct RelativeSweep {
+struct DependentVariable {
 	MeasVar* ref;		// Variable that this variable is relative to
 	double coeff;		// Multiplicative coefficient. This variable's value is coeff * value of ref
 };
-
-// Information about a Measurement variable
-enum SweepType{SWEEP_TYPE_SINGLE, SWEEP_TYPE_DUAL, SWEEP_TYPE_RELATIVE};   
+ 
 struct MeasVar {
+	char* name;					// Name of the variable
 	ZurichConn* conn;			// Connection to use for this variable
 	char* path;					// Path to the node to set at each step
-	enum SweepType sweepType;	// Which type of sweep is contained in the struct
 	union {
-		LinearSweep singleSweep;
-		LinearSweep dualSweep;
-		RelativeSweep relativeSweep;
+		IndependentVariable independentVariable;
+		DependentVariable dependentVariable;
 	};
 	double* values;				// Array of precomputed values for the sweep
 	MeasStep* parent;			// Parent MeasStep
+	enum VarType varType;			// Type of variable
 };
 
 
@@ -156,7 +167,8 @@ void deleteMeasVar(MeasVar* measVar);
 size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich);
 int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
-size_t getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement);
+long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep);
+long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement);
 int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement);
 int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement);
 

@@ -126,6 +126,49 @@ static void removePathFromTree(TreeNode* tree, char* path)
 	
 }
 
+/***** Functions for modifying a measurement *****/
+
+// Display all MeasSteps
+static void updateMeasStepDisplay(Measurement* measurement)
+{
+	// Delete everything
+	DeleteListItem(measurement->panel, MEASP_STEPTREE, 0, -1);
+	
+	int stepTreeItem = 0;
+	// Loop over steps
+	for (size_t i = 0;i < measurement->nSteps;i++) {
+		// Add step
+		MeasStep* thisStep = measurement->steps[i];
+		stepTreeItem = InsertTreeItem(measurement->panel, MEASP_STEPTREE, VAL_SIBLING, stepTreeItem, VAL_LAST, thisStep->name, NULL, NULL, (int)thisStep);
+		
+		// Add each child variable
+		for (size_t j = 0;j < thisStep->nVars;j++) {
+			InsertTreeItem(measurement->panel, MEASP_STEPTREE, VAL_CHILD, stepTreeItem, VAL_LAST, thisStep->vars[j]->name, NULL, NULL, (int)thisStep->vars[j]);
+		}
+	}
+}
+
+// Creates a new measurement step and adds it to the specified measurement
+// The newly created step is returned
+static MeasStep* addMeasurementStep(Measurement* measurement)
+{
+	// Create the MeasStep
+	MeasStep* measStep = newMeasStep(measurement);
+	
+	// Create a starting variable
+	MeasVar* measVar = newMeasVar(measStep);
+	
+	// Add to tree box
+	updateMeasStepDisplay(measurement);
+	
+	return measStep;
+}
+
+// Removes and deletes the specified measurement step
+static void removeMeasurementStep(MeasStep* measStep)
+{
+	deleteMeasStep(measStep);
+}
 
 
 
@@ -508,14 +551,22 @@ int CVICALLBACK renameMeas_CB (int panel, int control, int event, void *callback
 }
 
 // Called for buttons to add, delete, or edit measurement steps
-int CVICALLBACK steps_CB (int panel, int control, int event,
-						  void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK steps_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
-	switch (event)
+	if (event == EVENT_COMMIT)
 	{
-		case EVENT_COMMIT:
-
-			break;
+		Measurement* measurement;
+		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
+		
+		switch (control) {
+			case MEASP_ADDSTEP:
+				addMeasurementStep(measurement);
+				break;
+			case MEASP_DELETESTEP:
+				break;
+			case MEASP_EDITSTEP:
+				break;
+		}
 	}
 	return 0;
 }

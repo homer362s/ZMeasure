@@ -121,7 +121,7 @@ Measurement* newMeasurement(ZMeasure* zmeasure)
 	strcpy(measurement->measTree->data, "");
 	
 	char* defaultName = "Untitled";
-	int length = strlen(defaultName);
+	size_t length = strlen(defaultName);
 	measurement->name = malloc((length+1) * sizeof(char));
 	strcpy(measurement->name, defaultName);
 	
@@ -143,37 +143,98 @@ void deleteMeasurement(Measurement* measurement)
 	free(measurement);
 }
 
+// Create a new MeasStep and add it to a Measurement
 MeasStep* newMeasStep(Measurement* measurement)
 {
+	// If we are at the limit, do nothing, return null pointer
+	if (measurement->nSteps >= MAX_MEAS_STEPS) {
+		return 0;
+	}
+	
+	// Create and initialize measStep
 	MeasStep* measStep = malloc(sizeof(MeasStep));
-	measStep->delay = 0;
-	measStep->nPoints = 0;
-	measStep->parent = measurement;
+	measStep->delay = 1;
+	measStep->nPoints = 101;
 	measStep->nVars = 0;
+	measStep->sweepType = SWEEP_TYPE_SINGLE;
 	for(int i = 0;i < MAX_MEAS_VARS;i++) {
 		measStep->vars[i] = 0;
 	}
+	
+	// Add to parent's child list
+	measStep->parent = measurement; 
+	measurement->steps[measurement->nSteps] = measStep;
+	measurement->nSteps += 1;
+	
+	// Create default name
+	const char* sweepTemplate = "Sweep %d";
+	const char* stepTemplate = "Step %d";
+	char* thisTemplate;
+	size_t nSteps = measurement->nSteps;
+	if (nSteps == 0) {
+		thisTemplate = sweepTemplate;
+	} else {
+		thisTemplate = stepTemplate;
+	}
+	
+	ssize_t len = snprintf(0, 0, thisTemplate, (int)nSteps);
+	measStep->name = malloc((len+1) * sizeof(char));
+	sprintf(measStep->name, thisTemplate, (int)nSteps);
 	
 	return measStep;
 }
 
 void deleteMeasStep(MeasStep* measStep)
 {
+	Measurement* measurement = measStep->parent;
+	// Remove from parent
+	long int index = getMeasStepIndex(measurement, measStep);
+	if (index >= 0) {
+		measurement->steps[index] = 0;
+		for(size_t i = index+1;i < measurement->nSteps;i++) {
+			measurement->steps[i-1] = measurement->steps[i];
+		}
+		measurement->nSteps -= 1;
+		measurement->steps[measurement->nSteps] = 0;
+	}
+	
+	// Delete measVars
 	for(uint32_t i = 0;i < measStep->nVars;i++) {
 		deleteMeasVar(measStep->vars[i]);
 	}
 	
+	free(measStep->name);
+	
 	free(measStep);
 }
 
+// TODO: Add to the parent's child array and count
 MeasVar* newMeasVar(MeasStep* measStep)
 {
+	// If we are at the variable limit, do nothing, return null pointer
+	if (measStep->nVars >= MAX_MEAS_VARS) {
+		return 0;
+	}
+	
+	// Create and initialize measVar
 	MeasVar* measVar = malloc(sizeof(MeasVar));
 	measVar->conn = 0;
-	measVar->parent=measStep;
 	measVar->path = 0;
-	measVar->sweepType = 0;
 	measVar->values = 0;
+	measVar->varType = VAR_TYPE_INDEPENDENT;
+	
+	// Add to parent's child list
+	measVar->parent=measStep;
+	measStep->vars[measStep->nVars] = measVar;
+	measStep->nVars += 1;
+	
+	// Create default name
+	const char* thisTemplate = "Var %d";
+	size_t nVars = measStep->nVars;
+	
+	ssize_t len = snprintf(0, 0, thisTemplate, (int)nVars);
+	measVar->name = malloc((len+1) * sizeof(char));
+	sprintf(measVar->name, thisTemplate, (int)nVars);
 	
 	return measVar;
 }
@@ -184,6 +245,7 @@ MeasVar* newMeasVar(MeasStep* measStep)
 // measurement
 void deleteMeasVar(MeasVar* measVar)
 {
+	free(measVar->name);
 	free(measVar->values);
 	free(measVar->path);
 	free(measVar);
@@ -221,7 +283,7 @@ int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 // This function does not free any memory
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 {
-	size_t index = getZurichConnIndex(zmeasure, zurich);
+	long int index = getZurichConnIndex(zmeasure, zurich);
 	if (index == -1) {
 		return 1;
 	}
@@ -240,9 +302,20 @@ int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 	return 0;
 }
 
+// Returns the index of a pointer in an array
+long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
+{
+	for(size_t i = 0;i < measurement->nSteps;i++) {
+		if (measurement->steps == measStep) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 // Get the index of a Measurement in a ZMeasure struct
 // Returns -1 if not found
-size_t getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
+long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
 {
 	for(size_t i = 0;i < zmeasure->measurementCount;i++) {
 		if (zmeasure->measurements[i] == measurement) {
@@ -273,7 +346,7 @@ int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement)
 // This function does not free any memory
 int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement)
 {
-	size_t index = getMeasurementIndex(zmeasure, measurement);
+	long int index = getMeasurementIndex(zmeasure, measurement);
 	if (index == -1) {
 		return 1;
 	}
