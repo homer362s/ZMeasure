@@ -130,8 +130,8 @@ Measurement* newMeasurement(ZMeasure* zmeasure)
 
 void deleteMeasurement(Measurement* measurement)
 {
-	for(uint32_t i = 0;i < measurement->nSteps;i++) {
-		deleteMeasStep(measurement->steps[i]);
+	while(measurement->nSteps) {
+		deleteMeasStep(measurement->steps[0]);
 	}
 	
 	CmtDiscardLock(measurement->threadLock);
@@ -156,6 +156,7 @@ MeasStep* newMeasStep(Measurement* measurement)
 	measStep->delay = 1;
 	measStep->nPoints = 101;
 	measStep->nVars = 0;
+	measStep->panel = 0;
 	measStep->sweepType = SWEEP_TYPE_SINGLE;
 	for(int i = 0;i < MAX_MEAS_VARS;i++) {
 		measStep->vars[i] = 0;
@@ -190,7 +191,7 @@ void deleteMeasStep(MeasStep* measStep)
 	// Remove from parent
 	long int index = getMeasStepIndex(measurement, measStep);
 	if (index >= 0) {
-		measurement->steps[index] = 0;
+		// Shift following MeasSteps forward
 		for(size_t i = index+1;i < measurement->nSteps;i++) {
 			measurement->steps[i-1] = measurement->steps[i];
 		}
@@ -221,7 +222,10 @@ MeasVar* newMeasVar(MeasStep* measStep)
 	measVar->conn = 0;
 	measVar->path = 0;
 	measVar->values = 0;
+	measVar->coeff = 1;
 	measVar->varType = VAR_TYPE_INDEPENDENT;
+	measVar->independentVariable.start = 0;
+	measVar->independentVariable.step = 0;
 	
 	// Add to parent's child list
 	measVar->parent=measStep;
@@ -306,7 +310,7 @@ int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 {
 	for(size_t i = 0;i < measurement->nSteps;i++) {
-		if (measurement->steps == measStep) {
+		if (measurement->steps[i] == measStep) {
 			return i;
 		}
 	}

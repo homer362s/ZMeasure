@@ -9,6 +9,13 @@
 #define MEAS_RUNNING 1
 #define MEAS_PAUSED 2
 
+// Datatypes
+struct TreeSelectParams {
+	void* function;
+	void* data;
+	int leavesOnly;
+};
+
 // Function prototypes
 void initMeasNodes(void);
 void deleteMeasNodes(void);

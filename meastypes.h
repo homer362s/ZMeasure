@@ -119,6 +119,7 @@ struct MeasStep {
 	float delay;					// Time delay, in seconds, between each measurement point at this step
 	Measurement* parent;			// Parent measurement
 	enum SweepType sweepType;		// Which type of sweep
+	int panel;						// Panel editing this step
 };
 
 // This variable is a regular linear sweep
@@ -136,6 +137,7 @@ struct DependentVariable {
 struct MeasVar {
 	char* name;					// Name of the variable
 	ZurichConn* conn;			// Connection to use for this variable
+	double coeff;				// Measurement coefficient. Multiplied by raw values to get data in desired units
 	char* path;					// Path to the node to set at each step
 	union {
 		IndependentVariable independentVariable;
