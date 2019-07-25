@@ -27,26 +27,6 @@ TreeNode* newTree(size_t allocSize)
 	return tree;
 }
 
-// Delete a tree node and free all its memory
-// This should usually not be called since it doesn't properly
-// clean up the parent's reference list
-static void deleteTreeNode(TreeNode* tree, void delfcn(void* data))
-{
-	// Free children
-	for(size_t i = 0;i < tree->nChildren;i++) {
-		deleteTreeNode(tree->children[i], delfcn);
-	}
-	free(tree->children);
-	tree->children = 0;
-	
-	// Free this node
-	delfcn(tree->data);
-	tree->data = 0;
-	
-	free(tree);
-	tree = 0;
-}
-
 // Delete a tree and free all the memory. Must be called on the parent
 // it is an error if it is not and nothing is freed
 // delfcn -> Function that takes TreeNode.data and frees it
@@ -72,6 +52,22 @@ TreeNode* addNodeToTree(TreeNode* tree, size_t allocSize)
 	graftTree(tree, childTree);
 	
 	return childTree;
+}
+
+// Returns the first generation child node of a node containing the specified data 
+// compfcn should return 0 if the two are equal
+TreeNode* getTreeNodeFromData(TreeNode* tree, void* data, int (*compfcn)(void* data1, void* data2))
+{
+	if (!tree) {
+		return 0;
+	}
+	for (size_t i = 0;i < tree->nChildren;i++) {
+		if (compfcn(tree->children[i]->data, data) == 0) {
+			return tree->children[i];
+		}
+	}
+	
+	return 0;
 }
 
 // Combine two trees into one
@@ -110,7 +106,7 @@ int detachNodeFromTree(TreeNode* childTree)
 {
 	TreeNode* parent = childTree->parent;
 	
-	// If the node already is the parent, we are done, return
+	// If the node already is the root, we are done, return
 	if (!parent) {
 		return 0;
 	}
@@ -127,11 +123,14 @@ int detachNodeFromTree(TreeNode* childTree)
 	}
 	parent->nChildren -= 1;
 	
+	childTree->parent = 0;
+	
 	return 0;
 }
 
 // Delete a node in a tree
 // childTree -> node to delete
+// delfcn -> function to free data
 void deleteNodeFromTree(TreeNode* childTree, void delfcn(void*))
 {
 	detachNodeFromTree(childTree);
@@ -178,7 +177,7 @@ TreeNode* copyTreeFromBase(TreeNode* sourceTree)
 	TreeNode* parent;
 	
 	// Copy all the direct ancestors
-	while(parent = copy->parent) {
+	while((parent = copy->parent)) {
 		TreeNode* newParent = newTree(1);
 		newParent->data = parent->data;
 		graftTree(newParent, copy);
@@ -192,16 +191,16 @@ TreeNode* copyTreeFromBase(TreeNode* sourceTree)
 // Iterate over the entire tree
 // fcn(TreeNode* node, size_t depth) is called for each node, starting with the root
 // node, then the first child, the the first grand child
-void depthFirstIterTree(TreeNode* tree, size_t startingDepth, void (*fcn)(TreeNode* node, size_t depth))
+void depthFirstIterTree(TreeNode* tree, size_t startingDepth, void* data, void (*fcn)(TreeNode* node, size_t depth, void* data))
 {
-	(*fcn)(tree, startingDepth);
+	(*fcn)(tree, startingDepth, data);
 	for(size_t i = 0;i < tree->nChildren;i++) {
-		depthFirstIterTree(tree->children[i], startingDepth+1, fcn);
+		depthFirstIterTree(tree->children[i], startingDepth+1, data, fcn);
 	}
 } 
 
 // Passed to depthFirstIterTree to print string data from a Tree
-void printStrIterFcn(TreeNode* node, size_t depth)
+void printStrIterFcn(TreeNode* node, size_t depth, void* data)
 {
 	for(size_t i = 0;i < depth;i++) {
 		printf(" ");
@@ -210,7 +209,7 @@ void printStrIterFcn(TreeNode* node, size_t depth)
 }
 
 // Passed to depthFirstIterTree to sort sting data in the tree
-void sortStrIterFcn(TreeNode* node, size_t depth)
+void sortStrIterFcn(TreeNode* node, size_t depth, void* data)
 {
 	TreeNode* tmp;
 	
@@ -224,6 +223,13 @@ void sortStrIterFcn(TreeNode* node, size_t depth)
 			i = 0;
 		}
 	}
+}
+
+
+/***** Helper functions *****/
+// Pass to deleteNodeFromTree to not free the data within the nodes
+void dontFree(void* ptr)
+{
 }
 
 
@@ -249,7 +255,24 @@ static int getTreeNodeIndex(TreeNode* tree)
 }
 
 
-// Pass to deleteNodeFromTree to not free the data within the nodes
-void dontFree(void* ptr)
+// Delete a tree node and free all its memory
+// This should usually not be called since it doesn't properly
+// clean up the parent's reference list
+static void deleteTreeNode(TreeNode* tree, void delfcn(void* data))
 {
+	// Free children
+	for(size_t i = 0;i < tree->nChildren;i++) {
+		deleteTreeNode(tree->children[i], delfcn);
+	}
+	free(tree->children);
+	tree->children = 0;
+	
+	// Free this node
+	delfcn(tree->data);
+	tree->data = 0;
+	
+	free(tree);
+	tree = 0;
 }
+
+

@@ -31,15 +31,15 @@
 
 #define  STEPP                            2       /* callback function: steppanel_CB */
 #define  STEPP_VARS                       2       /* control type: listBox, callback function: (none) */
-#define  STEPP_STEP                       3       /* control type: numeric, callback function: (none) */
-#define  STEPP_STOP                       4       /* control type: numeric, callback function: (none) */
+#define  STEPP_STEP                       3       /* control type: numeric, callback function: measvar_CB */
+#define  STEPP_STOP                       4       /* control type: numeric, callback function: measvar_CB */
 #define  STEPP_NPOINTS                    5       /* control type: numeric, callback function: (none) */
-#define  STEPP_COEFF                      6       /* control type: numeric, callback function: (none) */
-#define  STEPP_START                      7       /* control type: numeric, callback function: (none) */
+#define  STEPP_COEFF                      6       /* control type: numeric, callback function: measvar_CB */
+#define  STEPP_START                      7       /* control type: numeric, callback function: measvar_CB */
 #define  STEPP_STEPNAME                   8       /* control type: string, callback function: (none) */
 #define  STEPP_PATH                       9       /* control type: string, callback function: (none) */
 #define  STEPP_LOADPATH                   10      /* control type: command, callback function: selectPath_CB */
-#define  STEPP_VARNAME                    11      /* control type: string, callback function: (none) */
+#define  STEPP_VARNAME                    11      /* control type: string, callback function: measvar_CB */
 #define  STEPP_DELVAR                     12      /* control type: command, callback function: (none) */
 #define  STEPP_ADDVAR                     13      /* control type: command, callback function: (none) */
 #define  STEPP_DECORATION                 14      /* control type: deco, callback function: (none) */
@@ -63,6 +63,7 @@
      /* Callback Prototypes: */
 
 int  CVICALLBACK measpanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
+int  CVICALLBACK measvar_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK popuppanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK renameMeas_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK selectPath_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);

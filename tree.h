@@ -51,12 +51,16 @@ TreeNode* copyTreeIntoTree(TreeNode* parentTree, TreeNode* sourceTree);
 // Does not copy siblings, or cousins, etc.
 TreeNode* copyTreeFromBase(TreeNode* sourceTree);
 
+// Returns the first generation child node of a node containing the specified data 
+// compfcn should return 0 if the two are equal
+TreeNode* getTreeNodeFromData(TreeNode* tree, void* data, int (*compfcn)(void* data1, void* data2));
+
 // Iterate over the entire tree
 // fcn(void* data) is called for each node, starting with the root
 // node, then the first child, the the first grand child
-void depthFirstIterTree(TreeNode* tree, size_t startingDepth, void (*fcn)(TreeNode* node, size_t depth));
-void printStrIterFcn(TreeNode* node, size_t depth);
-void sortStrIterFcn(TreeNode* node, size_t depth);
+void depthFirstIterTree(TreeNode* tree, size_t startingDepth, void* data, void (*fcn)(TreeNode* node, size_t depth, void* data));
+void printStrIterFcn(TreeNode* node, size_t depth, void* data);
+void sortStrIterFcn(TreeNode* node, size_t depth, void* data);
 
 // Dummy function passed to deleteNodeFromTree if you don't want
 // The node data freed

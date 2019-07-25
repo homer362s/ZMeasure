@@ -21,6 +21,7 @@ static void stopMeasurement(Measurement* measurement);
 static int getChildNodeIndex(TreeNode* tree, char* name);
 static void addPathToTree(TreeNode* tree, char* path);
 static void removePathFromTree(TreeNode* tree, char* path);
+static void populateTree(int panel, int treeControl, struct TreeNode* tree);
 
 static void outVarsSelect_CB(Measurement* measurement, TreeNode** nodeList);
 static TreeNode** getTreeSelectedItems(int panel, int control);
@@ -96,7 +97,8 @@ static int getChildNodeIndex(TreeNode* tree, char* name)
 	return -1;
 }
 
-
+// Add a path to a tree
+// Does not duplicate nodes that already exist
 static void addPathToTree(TreeNode* tree, char* path)
 {
 	TreeNode* node = tree;
@@ -128,21 +130,55 @@ static void addPathToTree(TreeNode* tree, char* path)
 		}
 	}
 	
-	
 	deleteStringList(pathItems);
 }
 
+// Get the path up to and including the specified node
+static void getPathFromTree(TreeNode* tree, char* path)
+{
+	char oldpath[MAX_PATH_LEN];
+	strcpy(oldpath, tree->data);
+	TreeNode* parent;
+	while (tree = tree->parent) {
+		if (tree->data && ((char*)(tree->data))[0]) {
+			sprintf(path, "%s/%s", (char*)tree->data, oldpath);
+			strcpy(oldpath, path);
+		}
+	}
+	sprintf(path, "/%s", oldpath);
+}
 
-// TODO: Implement this
+
+// Removes a path from a tree
+// If the node to be removed has no siblings, its paren't is removed
+// This continues recursively until the entire tree has been removed
+// or until a node is found with siblings.
 static void removePathFromTree(TreeNode* tree, char* path)
 {
+	char* token = strtok(path, "/");
+	TreeNode* child = tree;
 	
+	do {
+		child = getTreeNodeFromData(child, token, strcmp);
+		if (!child) {
+			return;
+		}
+	} while (token = strtok(0, "/"));
+	
+	TreeNode* parent = child->parent;
+	while (parent = child->parent) {
+		if (parent->nChildren > 1) {
+			deleteNodeFromTree(child, free);
+			break;
+		}
+		deleteNodeFromTree(child, free);
+		child = parent;
+	}
 }
 
 /***** Functions for modifying a measurement *****/
 
-// Display all MeasSteps
-static void updateMeasStepDisplay(Measurement* measurement)
+static void updateMeasurementDisplay(Measurement* measurement)
 {
 	int panel = measurement->panel;
 	// Delete everything
@@ -153,13 +189,16 @@ static void updateMeasStepDisplay(Measurement* measurement)
 	for (size_t i = 0;i < measurement->nSteps;i++) {
 		// Add step
 		MeasStep* thisStep = measurement->steps[i];
-		stepTreeItem = InsertTreeItem(panel, MEASP_STEPTREE, VAL_SIBLING, stepTreeItem, VAL_LAST, thisStep->name, NULL, NULL, (int)thisStep);
+		stepTreeItem = InsertTreeItem(panel, MEASP_STEPTREE, VAL_SIBLING, stepTreeItem, VAL_LAST, thisStep->name, NULL, NULL, (unsigned __int64)thisStep);
 		
 		// Add each child variable
 		for (size_t j = 0;j < thisStep->nVars;j++) {
-			InsertTreeItem(panel, MEASP_STEPTREE, VAL_CHILD, stepTreeItem, VAL_LAST, thisStep->vars[j]->name, NULL, NULL, (int)thisStep->vars[j]);
+			InsertTreeItem(panel, MEASP_STEPTREE, VAL_CHILD, stepTreeItem, VAL_LAST, thisStep->vars[j]->name, NULL, NULL, (unsigned __int64)thisStep->vars[j]);
 		}
 	}
+	
+	// Measured nodes
+	populateTree(panel, MEASP_OUTVARTREE, measurement->measTree); 
 	
 	// Dim or undim buttons
 	if (measurement->nSteps == 0) {
@@ -168,6 +207,13 @@ static void updateMeasStepDisplay(Measurement* measurement)
 	} else {
 		SetCtrlAttribute(panel, MEASP_DELETESTEP, ATTR_DIMMED, 0);
 		SetCtrlAttribute(panel, MEASP_EDITSTEP, ATTR_DIMMED, 0);	
+	}
+	
+	if (measurement->measTree->nChildren) {
+		SetCtrlAttribute(panel, MEASP_DELETEVAR, ATTR_DIMMED, 0);
+	} else {
+		SetCtrlAttribute(panel, MEASP_DELETEVAR, ATTR_DIMMED, 1);
+
 	}
 }
 
@@ -180,7 +226,7 @@ static MeasStep* addMeasurementStep(Measurement* measurement)
 	newMeasVar(measStep);
 	
 	// Add to tree box
-	updateMeasStepDisplay(measurement);
+	updateMeasurementDisplay(measurement);
 	
 	return measStep;
 }
@@ -190,10 +236,10 @@ static void removeMeasurementStep(MeasStep* measStep)
 {
 	Measurement* measurement = measStep->parent;
 	deleteMeasStep(measStep);
-	updateMeasStepDisplay(measurement);
+	updateMeasurementDisplay(measurement);
 }
 
-static void updateMeasVarDisplay(int panel, MeasVar* measVar)
+static void updateSweepDisplay(int panel, MeasVar* measVar)
 {
 	int ctrlarray = GetCtrlArrayFromResourceID(panel, VARCTRLS);
 	
@@ -231,10 +277,10 @@ static void editMeasurementVariable(MeasStep* measStep, int index)
 
 		// Load variable list
 		for(size_t i = 0;i < measStep->nVars;i++) {
-			InsertListItem(measStep->panel, STEPP_VARS, i, measStep->vars[i]->name, (int)measStep->vars[i]);
+			InsertListItem(measStep->panel, STEPP_VARS, i, measStep->vars[i]->name, (unsigned __int64)measStep->vars[i]);
 		}
 		
-		updateMeasVarDisplay(measStep->panel, measStep->vars[index]);
+		updateSweepDisplay(measStep->panel, measStep->vars[index]);
 		
 		// Store this MeasStep in the panel's callback data
 		SetPanelAttribute(measStep->panel, ATTR_CALLBACK_DATA, measStep);
@@ -329,6 +375,9 @@ static void populateTreeNode(int panel, int treeControl, struct TreeNode* tree, 
 // Fill up a UI tree from the passed TreeNode tree
 static void populateTree(int panel, int treeControl, struct TreeNode* tree)
 {
+	// Delete everything in tree before we start
+	DeleteListItem(panel, treeControl, 0, -1);
+	
 	// Insert each device as a top level item
 	for(size_t i = 0;i < tree->nChildren;i++) {
 		TreeNode* treeRoot = tree->children[i];
@@ -336,17 +385,12 @@ static void populateTree(int panel, int treeControl, struct TreeNode* tree)
 		int rootIndex = InsertTreeItem(panel, treeControl, VAL_SIBLING, 0, VAL_LAST, treeRoot->data, NULL, 0, (unsigned __int64)treeRoot); 
 		
 		TreeNode* retrievedNode;
-		unsigned __int64 fakeptr;
-		GetTreeItemAttribute(panel, TREEP_TREE, rootIndex, ATTR_CTRL_VAL, &fakeptr);
-		retrievedNode = (TreeNode*)fakeptr;
-		printf("%s\n", (char*)(retrievedNode->data));
+		GetTreeItemAttribute(panel, TREEP_TREE, rootIndex, ATTR_CTRL_VAL, (unsigned __int64)(&retrievedNode));
 		
 		for(size_t j = 0;j < treeRoot->nChildren;j++) {
 			populateTreeNode(panel, treeControl, treeRoot->children[j], rootIndex);
 		}
 	}
-	
-
 }
 
 
@@ -574,7 +618,6 @@ static TreeNode** getTreeSelectedItems(int panel, int control)
          index >= 0 && error >= 0;
          error = GetTreeItem(panel, control, VAL_ALL, 0, index, VAL_NEXT, VAL_SELECTED, &index))
     {
-		TreeNode* thisNode;
 		GetTreeItemAttribute(panel, TREEP_TREE, index, ATTR_CTRL_VAL, (unsigned __int64*)(treeList + itemIndex));
 		itemIndex++;
     }
@@ -662,16 +705,31 @@ int CVICALLBACK startstop_CB (int panel, int control, int event, void *callbackD
 int CVICALLBACK vars_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_COMMIT)
-	{
+	{   
+		Measurement* measurement;
+		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
 		switch (control) {
 			case MEASP_ADDVAR:
-				Measurement* measurement;
-				GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measurement);
 				treeSelectPopup(panel, measNodes, outVarsSelect_CB, measurement, VAL_SELECTION_MULTIPLE, 1);
+				break;
+			case MEASP_DELETEVAR:
+				TreeNode* measNode;
+				GetCtrlVal(panel, MEASP_OUTVARTREE, (unsigned __int64*)(&measNode));
+				char path[MAX_PATH_LEN];
+				getPathFromTree(measNode, path);
+				removePathFromTree(measurement->measTree, path);
+				updateMeasurementDisplay(measurement);
 				break;
 		}
 	}
 	return 0;
+}
+
+void addPathToTreeIterFcn(TreeNode* node, size_t depth, TreeNode* measNodes)
+{   
+	char* path[MAX_PATH_LEN];
+	getPathFromTree(node, path);
+	addPathToTree(measNodes, path);
 }
 
 // Passed to treeSelectPopup to handle selecting output variable nodes
@@ -679,11 +737,13 @@ static void outVarsSelect_CB(Measurement* measurement, TreeNode** nodeList)
 {
 	if (nodeList) {
 		TreeNode* thisNode;
-		while(thisNode = *nodeList++) {
-			depthFirstIterTree(thisNode, 0, printStrIterFcn);
+		while((thisNode = *nodeList++)) {
+			depthFirstIterTree(thisNode, 0, measurement->measTree, addPathToTreeIterFcn);
 		}
+		updateMeasurementDisplay(measurement); 	
 	}
 }
+
 
 
 int CVICALLBACK renameMeas_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
@@ -738,7 +798,7 @@ int CVICALLBACK steps_CB (int panel, int control, int event, void *callbackData,
 				if (ancestor == -1) {
 					GetCtrlVal(panel, MEASP_STEPTREE, (int*)(&measStep));
 				} else {
-					GetTreeItemAttribute(panel, MEASP_STEPTREE, ancestor, ATTR_CTRL_VAL, (int*)(&measStep));
+					GetTreeItemAttribute(panel, MEASP_STEPTREE, ancestor, ATTR_CTRL_VAL, (unsigned __int64*)(&measStep));
 				}
 				editMeasurementStep(measStep);
 				break;
@@ -747,9 +807,9 @@ int CVICALLBACK steps_CB (int panel, int control, int event, void *callbackData,
 	return 0;
 }
 
-static void nodeSelect_CB(void* callbackdata, TreeNode* nodeList, size_t count) 
+static void nodeSelect_CB(void* callbackdata, TreeNode** nodeList) 
 {
-	char* path = nodeList->data;
+	char* path = nodeList[0]->data;
 }
 
 int CVICALLBACK selectPath_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
@@ -766,3 +826,12 @@ int CVICALLBACK selectPath_CB (int panel, int control, int event, void *callback
 	return 0;
 }
 
+int CVICALLBACK measvar_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_COMMIT)
+	{
+		MeasStep* measStep;
+		
+	}
+	return 0;
+}
