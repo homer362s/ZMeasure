@@ -2783,7 +2783,7 @@ typedef struct ZIEvent ZIEvent;
 
     @sa ziAPIDeallocateEventEx
 */
-ZI_EXPORT ZIEvent* ziAPIAllocateEventEx();
+ZI_EXPORT ZIEvent* ziAPIAllocateEventEx(void);
 
 /// Deallocates ZIEvent structure created with ziAPIAllocateEventEx().
 /** This function is the compliment to ziAPIAllocateEventEx()
@@ -4078,8 +4078,8 @@ typedef struct ziEvent DEPRECATED(ziEvent);
 #endif
 
 /// Deprecated: See ::ziAPIAllocateEventEx().
-DEPRECATED(inline ziEvent* ziAPIAllocateEvent());
-inline ziEvent* ziAPIAllocateEvent() {
+DEPRECATED(inline ziEvent* ziAPIAllocateEvent(void));
+inline ziEvent* ziAPIAllocateEvent(void) {
   return (ziEvent*)ziAPIAllocateEventEx();
 }
 

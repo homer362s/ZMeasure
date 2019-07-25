@@ -8,7 +8,6 @@
 #include "meastypes.h"
 
 #include "ZMeasure.h"
-#include "zurichNodeTree.h"
 #include "measurement.h"
 
 
@@ -16,7 +15,7 @@ int CVICALLBACK updateZurichUIControls(int reserved, int timerId, int event, voi
 void formatNumberScientific(char* str, double value);
 
 // Create main system struct
-ZMeasure* allocateSystemVars()
+ZMeasure* allocateSystemVars(void)
 {
 	ZMeasure* zmeasure = malloc(sizeof(ZMeasure));
 	

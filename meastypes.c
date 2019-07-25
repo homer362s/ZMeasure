@@ -152,7 +152,7 @@ MeasStep* newMeasStep(Measurement* measurement)
 	}
 	
 	// Create and initialize measStep
-	MeasStep* measStep = malloc(sizeof(MeasStep));
+	MeasStep *measStep = malloc(sizeof(MeasStep));
 	measStep->delay = 1;
 	measStep->nPoints = 101;
 	measStep->nVars = 0;
@@ -170,7 +170,7 @@ MeasStep* newMeasStep(Measurement* measurement)
 	// Create default name
 	const char* sweepTemplate = "Sweep %d";
 	const char* stepTemplate = "Step %d";
-	char* thisTemplate;
+	char *thisTemplate;
 	size_t nSteps = measurement->nSteps;
 	if (nSteps == 0) {
 		thisTemplate = sweepTemplate;
@@ -185,11 +185,11 @@ MeasStep* newMeasStep(Measurement* measurement)
 	return measStep;
 }
 
-void deleteMeasStep(MeasStep* measStep)
+void deleteMeasStep(MeasStep *measStep)
 {
-	Measurement* measurement = measStep->parent;
+	Measurement *measurement = measStep->parent;
 	// Remove from parent
-	long int index = getMeasStepIndex(measurement, measStep);
+	long long int index = getMeasStepIndex(measurement, measStep);
 	if (index >= 0) {
 		// Shift following MeasSteps forward
 		for(size_t i = index+1;i < measurement->nSteps;i++) {
@@ -287,7 +287,7 @@ int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 // This function does not free any memory
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 {
-	long int index = getZurichConnIndex(zmeasure, zurich);
+	long long int index = getZurichConnIndex(zmeasure, zurich);
 	if (index == -1) {
 		return 1;
 	}
@@ -307,7 +307,7 @@ int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 }
 
 // Returns the index of a pointer in an array
-long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
+long long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 {
 	for(size_t i = 0;i < measurement->nSteps;i++) {
 		if (measurement->steps[i] == measStep) {
@@ -319,7 +319,7 @@ long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 
 // Get the index of a Measurement in a ZMeasure struct
 // Returns -1 if not found
-long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
+long long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
 {
 	for(size_t i = 0;i < zmeasure->measurementCount;i++) {
 		if (zmeasure->measurements[i] == measurement) {
@@ -350,7 +350,7 @@ int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement)
 // This function does not free any memory
 int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement)
 {
-	long int index = getMeasurementIndex(zmeasure, measurement);
+	long long int index = getMeasurementIndex(zmeasure, measurement);
 	if (index == -1) {
 		return 1;
 	}

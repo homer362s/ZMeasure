@@ -9,7 +9,7 @@ IVI Standard Root Dir = "/C/Program Files (x86)/IVI Foundation/IVI"
 VXIplug&play Framework Dir = "/C/Program Files (x86)/IVI Foundation/VISA/winnt"
 IVI Standard Root 64-bit Dir = "/C/Program Files/IVI Foundation/IVI"
 VXIplug&play Framework 64-bit Dir = "/C/Program Files/IVI Foundation/VISA/win64"
-Number of Files = 19
+Number of Files = 17
 Target Type = "Executable"
 Flags = 16
 Copied From Locked InstrDrv Directory = False
@@ -131,25 +131,24 @@ Folder = "Source Files"
 Folder Id = 1
 
 [File 0009]
-File Type = "CSource"
+File Type = "Include"
 Res Id = 9
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "zurichNodeTree.c"
-Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.c"
-Exclude = True
-Compile Into Object File = False
+Path Rel Path = "fixedziAPI.h"
+Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
+Exclude = False
 Project Flags = 0
-Folder = "Source Files"
-Folder Id = 1
+Folder = "Include Files"
+Folder Id = 2
 
 [File 0010]
 File Type = "Include"
 Res Id = 10
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "fixedziAPI.h"
-Path = "/c/Users/user/Desktop/ZMeasure/fixedziAPI.h"
+Path Rel Path = "meastypes.h"
+Path = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
 Exclude = False
 Project Flags = 0
 Folder = "Include Files"
@@ -160,8 +159,8 @@ File Type = "Include"
 Res Id = 11
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "meastypes.h"
-Path = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
+Path Rel Path = "measurement.h"
+Path = "/c/Users/user/Desktop/ZMeasure/measurement.h"
 Exclude = False
 Project Flags = 0
 Folder = "Include Files"
@@ -172,8 +171,8 @@ File Type = "Include"
 Res Id = 12
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "measurement.h"
-Path = "/c/Users/user/Desktop/ZMeasure/measurement.h"
+Path Rel Path = "measurementSetup.h"
+Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
 Exclude = False
 Project Flags = 0
 Folder = "Include Files"
@@ -184,8 +183,8 @@ File Type = "Include"
 Res Id = 13
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "measurementSetup.h"
-Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
+Path Rel Path = "str.h"
+Path = "/c/Users/user/Desktop/ZMeasure/str.h"
 Exclude = False
 Project Flags = 0
 Folder = "Include Files"
@@ -196,18 +195,6 @@ File Type = "Include"
 Res Id = 14
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "str.h"
-Path = "/c/Users/user/Desktop/ZMeasure/str.h"
-Exclude = False
-Project Flags = 0
-Folder = "Include Files"
-Folder Id = 2
-
-[File 0015]
-File Type = "Include"
-Res Id = 15
-Path Is Rel = True
-Path Rel To = "Project"
 Path Rel Path = "tree.h"
 Path = "/c/Users/user/Desktop/ZMeasure/tree.h"
 Exclude = False
@@ -215,21 +202,9 @@ Project Flags = 0
 Folder = "Include Files"
 Folder Id = 2
 
-[File 0016]
-File Type = "Include"
-Res Id = 16
-Path Is Rel = True
-Path Rel To = "Project"
-Path Rel Path = "zurichNodeTree.h"
-Path = "/c/Users/user/Desktop/ZMeasure/zurichNodeTree.h"
-Exclude = False
-Project Flags = 0
-Folder = "Include Files"
-Folder Id = 2
-
-[File 0017]
+[File 0015]
 File Type = "Library"
-Res Id = 17
+Res Id = 15
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "../../../../Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.lib"
@@ -239,9 +214,9 @@ Project Flags = 0
 Folder = "Library Files"
 Folder Id = 3
 
-[File 0018]
+[File 0016]
 File Type = "Library"
-Res Id = 18
+Res Id = 16
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "../../../../Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win64.lib"
@@ -251,9 +226,9 @@ Project Flags = 0
 Folder = "Library Files"
 Folder Id = 3
 
-[File 0019]
+[File 0017]
 File Type = "DLL"
-Res Id = 19
+Res Id = 17
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "../../../../Program Files/Zurich Instruments/LabOne/API/C/lib/ziAPI-win32.dll"

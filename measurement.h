@@ -11,7 +11,7 @@
 
 // Datatypes
 struct TreeSelectParams {
-	void* function;
+	void (*function)(void* callbackdata, TreeNode** nodeList);
 	void* data;
 	int leavesOnly;
 };
