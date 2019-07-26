@@ -30,7 +30,7 @@ Save Changes Before Compiling = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 8
+Number of Opened Files = 9
 Window Confinement Region Enabled = True
 MainColumnWidth = 209
 FileDateColumnWidth = 70
@@ -54,7 +54,7 @@ Window Top = 152
 Window Left = 74
 Window Height = 349
 Window Width = 747
-Window Z-Order = 4
+Window Z-Order = 9
 
 [File 0002]
 Path = "/c/Users/user/Desktop/ZMeasure/ZMeasure.c"
@@ -63,8 +63,8 @@ Disk Date = 3647013230
 In Projects = "1,"
 Window Top = 32
 Window Left = 10
-Window Z-Order = 1
-Source Window State = "1,504,504,504,91,94,94,0,0,207,0,16,0,1,0,36,482,0,504,112,349,747,1,0,"
+Window Z-Order = 7
+Source Window State = "1,504,504,504,91,94,94,0,0,88,0,16,0,1,0,25,494,0,504,112,349,747,1,0,"
 
 [File 0003]
 Path = "/c/Users/user/Desktop/ZMeasure/measurementSetup.c"
@@ -73,7 +73,7 @@ Disk Date = 3646916053
 In Projects = "1,"
 Window Top = 182
 Window Left = 90
-Window Z-Order = 3
+Window Z-Order = 8
 Source Window State = "1,344,344,344,16,37,37,0,0,88,0,240,0,5,0,25,332,0,354,30,349,747,1,15,"
 
 [File 0004]
@@ -83,18 +83,18 @@ Disk Date = 3646820659
 In Projects = "1,"
 Window Top = 242
 Window Left = 122
-Window Z-Order = 8
-Source Window State = "1,4,9,4,39,87,39,0,0,88,0,0,0,0,0,25,0,0,4,39,349,747,1,16,"
+Window Z-Order = 5
+Source Window State = "1,4,9,4,39,87,39,0,0,88,0,0,0,0,0,25,0,0,14,85,349,747,1,16,"
 
 [File 0005]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement.c"
 File Type = "CSource"
-Disk Date = 3647013250
+Disk Date = 3647014133
 In Projects = "1,"
 Window Top = 92
 Window Left = 42
-Window Z-Order = 2
-Source Window State = "1,479,479,479,143,154,154,0,0,88,0,895,0,0,0,25,447,0,461,52,349,747,1,14,"
+Window Z-Order = 1
+Source Window State = "1,266,266,266,11,27,27,0,0,207,0,895,0,0,0,50,136,0,161,50,349,747,1,14,"
 
 [File 0006]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement_u.uir"
@@ -105,17 +105,17 @@ Window Top = 212
 Window Left = 106
 Window Height = 349
 Window Width = 747
-Window Z-Order = 5
+Window Z-Order = 6
 
 [File 0007]
 Path = "/c/Users/user/Desktop/ZMeasure/meastypes.c"
 File Type = "CSource"
-Disk Date = 3647010528
+Disk Date = 3647013800
 In Projects = "1,"
 Window Top = 289
 Window Left = 154
-Window Z-Order = 7
-Source Window State = "1,249,249,249,5,18,18,0,3,88,0,1,0,1,0,25,241,0,249,5,349,747,1,0,"
+Window Z-Order = 3
+Source Window State = "1,351,351,351,0,10,10,0,0,88,0,1,0,1,0,25,316,0,351,0,349,747,1,0,"
 
 [File 0008]
 Path = "/c/Users/user/Desktop/ZMeasure/str.c"
@@ -147,12 +147,12 @@ Source Window State = "1,324,324,1164,23,30,47,0,0,0,0,0,0,0,0,0,4069,0,4081,39,
 [File 0011]
 Path = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
 File Type = "Include"
-Disk Date = 3647008829
+Disk Date = 3647013779
 In Projects = "1,"
 Window Top = 152
 Window Left = 74
-Window Z-Order = 6
-Source Window State = "1,139,139,139,88,105,105,0,0,88,0,0,0,0,0,25,142,0,165,5,349,747,1,11,"
+Window Z-Order = 4
+Source Window State = "1,168,168,168,0,8,8,0,0,88,0,0,0,0,0,25,154,0,171,4,349,747,1,11,"
 
 [File 0012]
 Path = "/c/Users/user/Desktop/ZMeasure/measurement.h"
@@ -161,7 +161,8 @@ Disk Date = 3646915581
 In Projects = "1,"
 Window Top = 122
 Window Left = 58
-Source Window State = "1,14,14,14,0,20,20,0,0,0,0,0,0,0,0,0,0,0,13,50,349,747,1,0,"
+Window Z-Order = 2
+Source Window State = "1,14,14,14,0,20,20,0,0,88,0,0,0,0,0,25,0,0,13,50,349,747,1,0,"
 
 [File 0013]
 Path = "/c/Users/user/Desktop/ZMeasure/str.h"
@@ -206,8 +207,9 @@ Tab 0003 = "/c/Users/user/Desktop/ZMeasure/measurementSetup.c"
 Tab 0004 = "/c/Users/user/Desktop/ZMeasure/measurementSetup.h"
 Tab 0005 = "/c/Users/user/Desktop/ZMeasure/measurement_u.uir"
 Tab 0006 = "/c/Users/user/Desktop/ZMeasure/measurement.c"
-Tab 0007 = "/c/Users/user/Desktop/ZMeasure/meastypes.c"
-Tab 0008 = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
+Tab 0007 = "/c/Users/user/Desktop/ZMeasure/measurement.h"
+Tab 0008 = "/c/Users/user/Desktop/ZMeasure/meastypes.c"
+Tab 0009 = "/c/Users/user/Desktop/ZMeasure/meastypes.h"
 
 [Default Build Config 0001 Debug]
 Generate Browse Info = True

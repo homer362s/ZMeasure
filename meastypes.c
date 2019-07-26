@@ -277,7 +277,7 @@ void deleteMeasVar(MeasVar* measVar)
 
 // Get the index of a ZurichConn in a ZMeasure struct
 // Returns -1 if not found
-size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich)
+int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich)
 {
 	for(size_t i = 0;i < zmeasure->connCount;i++) {
 		if (zmeasure->connections[i] == zurich) {
@@ -326,7 +326,7 @@ int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich)
 }
 
 // Returns the index of a pointer in an array
-long long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
+int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 {
 	for(size_t i = 0;i < measurement->nSteps;i++) {
 		if (measurement->steps[i] == measStep) {
@@ -337,7 +337,7 @@ long long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 }
 
 // Returns the index of a pointer in an array
-long long int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar)
+int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar)
 {
 	for(size_t i = 0;i < measStep->nVars;i++) {
 		if (measStep->vars[i] == measVar) {
@@ -349,7 +349,7 @@ long long int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar)
 
 // Get the index of a Measurement in a ZMeasure struct
 // Returns -1 if not found
-long long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
+int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement)
 {
 	for(size_t i = 0;i < zmeasure->measurementCount;i++) {
 		if (zmeasure->measurements[i] == measurement) {

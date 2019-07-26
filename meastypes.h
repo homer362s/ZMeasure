@@ -37,10 +37,10 @@ typedef struct DependentVariable DependentVariable;
 struct ZMeasure {
 	PrimaryPanels* panels;								// Panels for all of the primary functions of the UI
 	ZurichConn* connections[MAX_DEVICE_CONNECTIONS];	// Array of connections to zurich devices
-	size_t connCount;									// Number of active connections to zurich devices
+	unsigned int connCount;									// Number of active connections to zurich devices
 	ActiveConn* activeConn;								// Connection displayed in the main UI window
 	Measurement* measurements[MAX_MEASUREMENTS];		// Array of each defined measurement
-	size_t measurementCount;							// Number of currently defined measurements
+	unsigned int measurementCount;							// Number of currently defined measurements
 };
 
 struct ActiveConn {
@@ -166,12 +166,12 @@ MeasVar* newMeasVar(MeasStep* measStep);
 void deleteMeasVar(MeasVar* measVar);
 
 // Utility
-size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich);
+int getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich);
 int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
-long long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep);
-long long int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar);
-long long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement);
+int getMeasStepIndex(Measurement* measurement, MeasStep* measStep);
+int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar);
+int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement);
 int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement);
 int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement);
 

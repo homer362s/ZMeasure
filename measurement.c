@@ -33,7 +33,7 @@ static const TreeNode* measNodes;
 static const TreeNode* varNodes;
 
 // Initialize the list of supported measurement nodes
-void initMeasNodes()
+void initMeasNodes(void)
 {
 	// Initialize measNodes
 	char str[MAX_PATH_LEN];
@@ -75,7 +75,7 @@ void initMeasNodes()
 }
 
 // Frees the measNodes global struct
-void deleteMeasNodes()
+void deleteMeasNodes(void)
 {
 	deleteTree(measNodes, free);
 	measNodes = 0;
@@ -138,7 +138,7 @@ static void getPathFromTree(TreeNode* tree, char* path)
 {
 	char oldpath[MAX_PATH_LEN];
 	strcpy(oldpath, tree->data);
-	while (tree = tree->parent) {
+	while ((tree = tree->parent)) {
 		if (tree->data && ((char*)(tree->data))[0]) {
 			sprintf(path, "%s/%s", (char*)tree->data, oldpath);
 			strcpy(oldpath, path);
@@ -239,7 +239,7 @@ static void removeMeasurementStep(MeasStep* measStep)
 	updateMeasurementDisplay(measurement);
 }
 
-static void updateSweepDisplay(int panel, size_t index)
+static void updateSweepDisplay(int panel, unsigned int index)
 {
 	int ctrlarray = GetCtrlArrayFromResourceID(panel, VARCTRLS);
 	
@@ -265,10 +265,7 @@ static void updateSweepDisplay(int panel, size_t index)
 		SetCtrlAttribute(panel, STEPP_DELVAR, ATTR_DIMMED, 1);
 		return;
 	} else {
-		long long int index = getMeasVarIndex(measStep, measVar);
-		if (index >= 0) {
-			SetCtrlIndex(panel, STEPP_VARS, index);
-		}
+		SetCtrlIndex(panel, STEPP_VARS, index);
 	}
 	
 	// Un-dim a bunch of stuff
@@ -284,7 +281,7 @@ static void updateSweepDisplay(int panel, size_t index)
 }
 
 // Open panel for editing a measurement step
-static void editMeasurementStep(MeasStep* measStep, size_t index)
+static void editMeasurementStep(MeasStep* measStep, unsigned int index)
 {
 	// Make sure index is valid
 	if (index >= measStep->nVars) {
@@ -820,7 +817,7 @@ int CVICALLBACK steps_CB (int panel, int control, int event, void *callbackData,
 
 static void nodeSelect_CB(void* callbackdata, TreeNode** nodeList) 
 {
-	char* path = nodeList[0]->data;
+	//char* path = nodeList[0]->data;
 }
 
 int CVICALLBACK selectPath_CB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
@@ -845,7 +842,7 @@ int CVICALLBACK measvar_CB (int panel, int control, int event, void *callbackDat
 		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measStep);
 		MeasVar* measVar;
 		GetCtrlVal(panel, STEPP_VARS, (unsigned __int64*)(&measVar));
-		long long varIndex = getMeasVarIndex(measStep, measVar);
+		int varIndex = getMeasVarIndex(measStep, measVar);
 		if (!measVar) {
 			return 0;
 		}
@@ -880,7 +877,7 @@ int CVICALLBACK measstep_CB (int panel, int control, int event, void *callbackDa
 	MeasStep* measStep;
 	GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measStep);
 	MeasVar* measVar = 0;
-	long long varIndex = 0;
+	int varIndex = 0;
 	if (measStep->nVars) {
 		GetCtrlVal(panel, STEPP_VARS, (unsigned __int64*)(&measVar));
 		varIndex = getMeasVarIndex(measStep, measVar);
@@ -900,7 +897,7 @@ int CVICALLBACK measstep_CB (int panel, int control, int event, void *callbackDa
 			stop = start + step*measStep->nPoints;
 	
 			measVar->independentVariable.step = step;
-			measStep->nPoints = (stop-start)/(double)step;    	  
+			measStep->nPoints = (unsigned int) ((stop-start)/(double)step);    	  
 		}
 		
 		if (control == STEPP_NPOINTS || control == STEPP_STEP) {
@@ -933,7 +930,7 @@ int CVICALLBACK changevars_CB (int panel, int control, int event, void *callback
 		MeasStep* measStep;
 		GetPanelAttribute(panel, ATTR_CALLBACK_DATA, &measStep);
 		MeasVar* measVar = 0;
-		long long varIndex = 0;
+		int varIndex = 0;
 		if (measStep->nVars) {
 			GetCtrlVal(panel, STEPP_VARS, (unsigned __int64*)(&measVar));
 			varIndex = getMeasVarIndex(measStep, measVar);
