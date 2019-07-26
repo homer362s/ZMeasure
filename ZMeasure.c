@@ -502,7 +502,7 @@ int CVICALLBACK editMeasurement_CB (int panel, int control, int event, void *cal
 				case ENTER_KEY:
 					int index = eventData2;
 					Measurement* measurement;
-					GetTreeItemAttribute(panel, MAINP_MEASUREMENTS, index, ATTR_CTRL_VAL, (int*)&measurement);
+					GetTreeItemAttribute(panel, MAINP_MEASUREMENTS, index, ATTR_CTRL_VAL, (unsigned __int64*)&measurement);
 					raiseMeasurementPanel(measurement);
 			}
 			// Figure out which measurement this is

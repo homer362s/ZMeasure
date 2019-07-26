@@ -23,8 +23,8 @@
 #define  MEASP_START                      8       /* control type: command, callback function: startstop_CB */
 #define  MEASP_DECORATION                 9       /* control type: deco, callback function: (none) */
 #define  MEASP_TEXTMSG                    10      /* control type: textMsg, callback function: (none) */
-#define  MEASP_ADDVAR                     11      /* control type: command, callback function: vars_CB */
-#define  MEASP_DELETEVAR                  12      /* control type: command, callback function: vars_CB */
+#define  MEASP_ADDVAR                     11      /* control type: command, callback function: outputvars_CB */
+#define  MEASP_DELETEVAR                  12      /* control type: command, callback function: outputvars_CB */
 #define  MEASP_EDITSTEP                   13      /* control type: command, callback function: steps_CB */
 #define  MEASP_DELETESTEP                 14      /* control type: command, callback function: steps_CB */
 #define  MEASP_ADDSTEP                    15      /* control type: command, callback function: steps_CB */
@@ -40,8 +40,8 @@
 #define  STEPP_PATH                       9       /* control type: string, callback function: (none) */
 #define  STEPP_LOADPATH                   10      /* control type: command, callback function: selectPath_CB */
 #define  STEPP_VARNAME                    11      /* control type: string, callback function: measvar_CB */
-#define  STEPP_DELVAR                     12      /* control type: command, callback function: measstep_CB */
-#define  STEPP_ADDVAR                     13      /* control type: command, callback function: measstep_CB */
+#define  STEPP_DELVAR                     12      /* control type: command, callback function: changevars_CB */
+#define  STEPP_ADDVAR                     13      /* control type: command, callback function: changevars_CB */
 #define  STEPP_DECORATION                 14      /* control type: deco, callback function: (none) */
 
 #define  TREEP                            3       /* callback function: popuppanel_CB */
@@ -62,9 +62,11 @@
 
      /* Callback Prototypes: */
 
+int  CVICALLBACK changevars_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK measpanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK measstep_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK measvar_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
+int  CVICALLBACK outputvars_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK popuppanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK renameMeas_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK selectPath_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
@@ -72,7 +74,6 @@ int  CVICALLBACK startstop_CB(int panel, int control, int event, void *callbackD
 int  CVICALLBACK steppanel_CB(int panel, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK steps_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK treepanel_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
-int  CVICALLBACK vars_CB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 
 
 #ifdef __cplusplus

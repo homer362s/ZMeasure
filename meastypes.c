@@ -200,8 +200,8 @@ void deleteMeasStep(MeasStep *measStep)
 	}
 	
 	// Delete measVars
-	for(uint32_t i = 0;i < measStep->nVars;i++) {
-		deleteMeasVar(measStep->vars[i]);
+	while (measStep->nVars) {
+		deleteMeasVar(measStep->vars[0]);
 	}
 	
 	free(measStep->name);
@@ -249,10 +249,29 @@ MeasVar* newMeasVar(MeasStep* measStep)
 // measurement
 void deleteMeasVar(MeasVar* measVar)
 {
-	free(measVar->name);
-	free(measVar->values);
-	free(measVar->path);
+	// Get parent MeasStep
+	MeasStep* measStep = measVar->parent;
+	
+	// Remove from parent's list
+	long long int index = getMeasVarIndex(measStep, measVar);
+	
+	/// Only remove from list if its in the list
+	// It always should be in the list, but you never know
+	if (index >= 0) {
+		for(size_t i = index+1;i < measStep->nVars;i++) {
+			measStep->vars[i-1] = measStep->vars[i];
+		}
+		measStep->nVars -= 1;
+		measStep->vars[measStep->nVars] = 0;
+		
+	}
+	
+	// Free the memory
+	free(measVar->name); measVar->name = 0;
+	free(measVar->values); measVar->values = 0;
+	free(measVar->path); measVar->path = 0;
 	free(measVar);
+	measVar = 0;
 }
 
 
@@ -311,6 +330,17 @@ long long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 {
 	for(size_t i = 0;i < measurement->nSteps;i++) {
 		if (measurement->steps[i] == measStep) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+// Returns the index of a pointer in an array
+long long int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar)
+{
+	for(size_t i = 0;i < measStep->nVars;i++) {
+		if (measStep->vars[i] == measVar) {
 			return i;
 		}
 	}

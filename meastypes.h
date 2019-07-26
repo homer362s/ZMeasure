@@ -170,6 +170,7 @@ size_t getZurichConnIndex(ZMeasure* zmeasure, ZurichConn* zurich);
 int addZurichConnToZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 int removeZurichConnFromZMeasure(ZMeasure* zmeasure, ZurichConn* zurich);
 long long int getMeasStepIndex(Measurement* measurement, MeasStep* measStep);
+long long int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar);
 long long int getMeasurementIndex(ZMeasure* zmeasure, Measurement* measurement);
 int addMeasurementToZMeasure(ZMeasure* zmeasure, Measurement* measurement);
 int removeMeasurementFromZMeasure(ZMeasure* zmeasure, Measurement* measurement);
