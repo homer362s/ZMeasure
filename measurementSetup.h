@@ -1,5 +1,5 @@
-#ifndef __MeasurementLegacySetup_H__
-#define __MeasurementLegacySetup_H__
+#ifndef __MeasurementSetup_H__
+#define __MeasurementSetup_H__
 
 #include "meastypes.h"
 
@@ -25,4 +25,4 @@ void deleteUITimerThread(ZMeasure* zmeasure);
 void newUITimerThread(ZMeasure* zmeasure, ZurichConnDef* oldConnDef);
 
 
-#endif  /* ndef __MeasurementLegacySetuph_H__ */
+#endif  /* ndef __MeasurementSetuph_H__ */

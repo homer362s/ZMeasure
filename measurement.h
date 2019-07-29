@@ -23,4 +23,4 @@ void raiseMeasurementPanel(Measurement* measurement);
 void createMeasurementInUI(ZMeasure* zmeasure);
 void deleteMeasurementFromUI(Measurement* measurement);
 
-#endif  /* ndef __MeasurementLegacy_H__ */
+#endif  /* ndef __Measurement_H__ */

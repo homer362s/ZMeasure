@@ -1,5 +1,23 @@
 #include "meastypes.h"
 
+
+// Function like macros
+#define getPtrIndexInArray(array, ptr, length) {\
+		for(unsigned int i = 0;i < length,i++) {\
+			if(array[i] == ptr) return i; \
+		}\
+	}\
+
+int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar)
+{
+	for(size_t i = 0;i < measStep->nVars;i++) {
+		if (measStep->vars[i] == measVar) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 /***** Functions to create and delete structs *****/
 ZurichConnDef* newZurichConnDef(char* address, uint16_t port, char* device)
 {
@@ -339,6 +357,7 @@ int getMeasStepIndex(Measurement* measurement, MeasStep* measStep)
 // Returns the index of a pointer in an array
 int getMeasVarIndex(MeasStep* measStep, MeasVar* measVar)
 {
+	retrgetPtrInArray(measStep->vars, measVar, measStep->nVars);
 	for(size_t i = 0;i < measStep->nVars;i++) {
 		if (measStep->vars[i] == measVar) {
 			return i;
